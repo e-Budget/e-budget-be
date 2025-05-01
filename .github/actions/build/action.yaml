@@ -1,0 +1,8 @@
+name: Build e-Budget BE
+description: Build e-Budget BE Quarkus application with Maven
+runs:
+  using: composite
+  steps:
+    - name: Build Quarkus Project
+      run: mvn -B verify
+      shell: bash

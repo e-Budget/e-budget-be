@@ -1,0 +1,15 @@
+name: Continuous Integration
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: e-Budget/e-budget-be/.github/actions/setup@main
+      - uses: e-Budget/e-budget-be/.github/actions/build@main
