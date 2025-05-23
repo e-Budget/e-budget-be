@@ -1,8 +1,14 @@
 name: Build e-Budget BE
-description: Build e-Budget BE Quarkus application with Maven
+description: Build and analyze e-Budget BE with Sonar Qube
+inputs:
+  sonarToken:
+    description: Sonar Qube token
+    required: true
 runs:
   using: composite
   steps:
-    - name: Build Quarkus Project
-      run: cd e-budget-be && mvn -B verify
+    - name: Build and analyze Quarkus Project
+      env:
+        SONAR_TOKEN: ${{ inputs.sonarToken }}
+      run: cd e-budget-be && mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=e-Budget_e-budget-be
       shell: bash
