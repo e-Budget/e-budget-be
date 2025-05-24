@@ -1,0 +1,11 @@
+name: Cache Maven packages
+description: Cache Maven packages
+runs:
+  using: composite
+  steps:
+    - name: Cache Maven packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2

@@ -1,0 +1,11 @@
+name: Cache SonarQube packages
+description: Cache SonarQube packages
+runs:
+  using: composite
+  steps:
+    - name: Cache SonarQube packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
