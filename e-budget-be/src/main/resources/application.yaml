@@ -1,0 +1,14 @@
+quarkus:
+  banner:
+    path: banner.txt
+  datasource:
+    db-kind: postgresql
+    username: postgres
+    password: postgres
+    jdbc:
+      url: jdbc:postgresql://localhost:5432/ebudget
+  hibernate-orm:
+    database:
+      generation:
+        ~: none
+        create-schemas: false
