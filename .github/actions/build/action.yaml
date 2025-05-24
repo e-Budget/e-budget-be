@@ -10,5 +10,5 @@ runs:
     - name: Build and analyze Quarkus Project
       env:
         SONAR_TOKEN: ${{ inputs.sonarToken }}
-      run: cd e-budget-be && mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=e-Budget_e-budget-be
+      run: cd e-budget-be && mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=e-Budget_e-budget-be -Psonar
       shell: bash
