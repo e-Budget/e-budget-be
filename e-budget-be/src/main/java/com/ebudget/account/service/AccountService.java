@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 @ApplicationScoped
 @RequiredArgsConstructor
 public class AccountService {
-    private static final Double INITIAL_BALANCE = 0.0;
-
     private final AccountRepository accountRepository;
 
     @Transactional
@@ -22,7 +20,7 @@ public class AccountService {
                 .accountName(newAccountDTO.accountName())
                 .accountType(newAccountDTO.accountType())
                 .initialBalance(newAccountDTO.initialBalance())
-                .balance(INITIAL_BALANCE)
+                .balance(newAccountDTO.initialBalance())
                 .build();
 
         accountRepository.persistAndFlush(account);
