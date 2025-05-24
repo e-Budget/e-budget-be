@@ -7,3 +7,8 @@ quarkus:
     password: postgres
     jdbc:
       url: jdbc:postgresql://localhost:5432/ebudget
+  hibernate-orm:
+    database:
+      generation:
+        ~: none
+        create-schemas: false
