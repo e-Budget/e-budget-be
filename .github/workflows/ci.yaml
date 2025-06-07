@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: e-Budget/e-budget-be/.github/actions/setup@main
-      - uses: e-Budget/e-budget-be/.github/actions/cache-sonar@main
-      - uses: e-Budget/e-budget-be/.github/actions/cache-maven@main
-      - uses: e-Budget/e-budget-be/.github/actions/build@main
+      - uses: e-Budget/e-budget-actions/.github/actions/setup@main
+      - uses: e-Budget/e-budget-actions/.github/actions/cache-sonar@main
+      - uses: e-Budget/e-budget-actions/.github/actions/cache-maven@main
+      - uses: e-Budget/e-budget-actions/.github/actions/build@main
         with:
           sonarToken: ${{ secrets.SONAR_TOKEN }}

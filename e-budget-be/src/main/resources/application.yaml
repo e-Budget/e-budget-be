@@ -1,14 +1,28 @@
 quarkus:
   banner:
     path: banner.txt
+  flyway:
+    enabled: false
   datasource:
     db-kind: postgresql
     username: postgres
     password: postgres
     jdbc:
       url: jdbc:postgresql://localhost:5432/ebudget
-  hibernate-orm:
-    database:
-      generation:
-        ~: none
-        create-schemas: false
+
+"%test":
+  quarkus:
+    flyway:
+      enabled: true
+      migrate-at-start: true
+      locations: filesystem:../e-budget-db/src/main/resources/db/migration
+    datasource:
+      devservices:
+        enabled: true
+        image-name: postgres:latest
+        username: postgres
+        password: postgres
+        db-name: ebudget_test
+        port: 5433
+      jdbc:
+        url: jdbc:postgresql://localhost:5433/ebudget_test

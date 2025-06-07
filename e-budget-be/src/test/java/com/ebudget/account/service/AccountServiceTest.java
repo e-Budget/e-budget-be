@@ -11,9 +11,13 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @QuarkusTest
 @DisplayName("Account Service")
@@ -26,25 +30,27 @@ class AccountServiceTest {
     @Test
     @DisplayName("Should add a new account")
     void shouldAddAccount() {
+        doNothing().when(accountRepository).persistAndFlush(any(Account.class));
+
         // given
         NewAccountDTO newAccountDTO = new NewAccountDTO(
                 "logo",
                 "name",
                 AccountType.BANK_ACCOUNT,
-                0.0
+                new BigDecimal("0.0")
         );
 
-        doNothing().when(accountRepository).persistAndFlush(any(Account.class));
-
         // when
-        AccountDTO newAccount = accountService.addAccount(newAccountDTO);
+        AccountDTO account = accountService.addAccount(newAccountDTO);
 
         // then
-        assertThat(newAccount).isInstanceOf(AccountDTO.class);
-        assertThat(newAccount.accountLogo()).isEqualTo(newAccountDTO.accountLogo());
-        assertThat(newAccount.accountName()).isEqualTo(newAccountDTO.accountName());
-        assertThat(newAccount.accountType()).isEqualTo(newAccountDTO.accountType());
-        assertThat(newAccount.initialBalance()).isEqualTo(newAccountDTO.initialBalance());
-        assertThat(newAccount.balance()).isEqualTo(newAccountDTO.initialBalance());
+        assertThat(account).isInstanceOf(AccountDTO.class);
+        assertThat(account.accountLogo()).isEqualTo(newAccountDTO.accountLogo());
+        assertThat(account.accountName()).isEqualTo(newAccountDTO.accountName());
+        assertThat(account.accountType()).isEqualTo(newAccountDTO.accountType());
+        assertThat(account.initialBalance()).isEqualTo(newAccountDTO.initialBalance());
+        assertThat(account.balance()).isEqualTo(newAccountDTO.initialBalance());
+
+        verify(accountRepository, times(1)).persistAndFlush(any(Account.class));
     }
 }

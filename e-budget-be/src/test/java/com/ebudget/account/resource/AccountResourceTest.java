@@ -1,46 +1,49 @@
 package com.ebudget.account.resource;
 
-import com.ebudget.account.model.Account;
 import com.ebudget.account.model.enumeration.AccountType;
-import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.request.NewAccountDTO;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static io.restassured.RestAssured.given;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 @QuarkusTest
 @DisplayName("Account Resource")
 @TestHTTPEndpoint(AccountResource.class)
 class AccountResourceTest {
-    @InjectMock
-    AccountRepository accountRepository;
-
     @Test
-    @DisplayName("Should a new account")
+    @DisplayName("Should add a new account")
     void shouldAddAccount() {
         NewAccountDTO newAccountDTO = new NewAccountDTO(
-                "logo",
-                "name",
+                "accountLogo",
+                "accountName",
                 AccountType.BANK_ACCOUNT,
-                0.0
+                new BigDecimal("0.0")
         );
 
-        doNothing().when(accountRepository).persistAndFlush(any(Account.class));
-
         given()
-                .contentType(ContentType.JSON)
+            .contentType(ContentType.JSON)
+            .body(newAccountDTO)
         .when()
-                .body(newAccountDTO)
-                .post()
+            .post()
         .then()
-                .statusCode(HttpResponseStatus.CREATED.code());
+            .statusCode(Response.Status.CREATED.getStatusCode())
+            .contentType(ContentType.JSON)
+            .body("accountId", notNullValue())
+            .body("accountLogo", equalTo(newAccountDTO.accountLogo()))
+            .body("accountName", equalTo(newAccountDTO.accountName()))
+            .body("accountType", equalTo(newAccountDTO.accountType().toString()))
+            .body("initialBalance", equalTo(newAccountDTO.initialBalance().floatValue()))
+            .body("balance", equalTo(newAccountDTO.initialBalance().floatValue()))
+            .body("createdAt", notNullValue())
+            .body("updatedAt", notNullValue());
     }
 }

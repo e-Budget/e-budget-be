@@ -2,6 +2,7 @@ package com.ebudget.account.resource.response;
 
 import com.ebudget.account.model.enumeration.AccountType;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -10,8 +11,8 @@ public record AccountDTO(
         String accountLogo,
         String accountName,
         AccountType accountType,
-        Double initialBalance,
-        Double balance,
+        BigDecimal initialBalance,
+        BigDecimal balance,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
