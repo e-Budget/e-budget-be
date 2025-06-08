@@ -5,10 +5,10 @@ quarkus:
     enabled: false
   datasource:
     db-kind: postgresql
-    username: postgres
-    password: postgres
+    username: ${E_BUDGET_DB_USERNAME:postgres}
+    password: ${E_BUDGET_DB_PASSWORD:postgres}
     jdbc:
-      url: jdbc:postgresql://localhost:5432/ebudget
+      url: jdbc:postgresql://${E_BUDGET_DB_HOSTNAME:localhost}:${E_BUDGET_DB_PORT:5432}/${E_BUDGET_DB_NAME:ebudget}
 
 "%test":
   quarkus:
