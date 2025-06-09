@@ -4,15 +4,11 @@ import com.ebudget.account.model.enums.AccountType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.math.BigDecimal;
-
-public record NewAccountDTO(
+public record UpdateAccountDTO(
         String accountLogo,
         @NotBlank
         String accountName,
         @NotNull
-        AccountType accountType,
-        @NotNull
-        BigDecimal initialBalance
+        AccountType accountType
 ) {
 }

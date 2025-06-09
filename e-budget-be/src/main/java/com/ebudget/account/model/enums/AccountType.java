@@ -1,4 +1,4 @@
-package com.ebudget.account.model.enumeration;
+package com.ebudget.account.model.enums;
 
 public enum AccountType {
     BANK_ACCOUNT,

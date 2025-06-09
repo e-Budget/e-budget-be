@@ -1,6 +1,6 @@
 package com.ebudget.account.resource;
 
-import com.ebudget.account.model.enumeration.AccountType;
+import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.resource.request.NewAccountDTO;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;

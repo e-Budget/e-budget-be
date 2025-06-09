@@ -1,7 +1,7 @@
 package com.ebudget.account.service;
 
 import com.ebudget.account.model.Account;
-import com.ebudget.account.model.enumeration.AccountType;
+import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.request.NewAccountDTO;
 import com.ebudget.account.resource.response.AccountDTO;
