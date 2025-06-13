@@ -1,6 +1,7 @@
 package com.ebudget.account.model;
 
-import com.ebudget.account.model.enumeration.AccountType;
+import com.ebudget.account.model.enums.AccountType;
+import com.ebudget.account.resource.request.UpdateAccountDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,10 +9,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -24,6 +27,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter(AccessLevel.PRIVATE)
 public class Account {
     @Id
     @Column(name = "account_id")
@@ -45,4 +49,10 @@ public class Account {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public void update(UpdateAccountDTO updateAccountDTO) {
+        setAccountLogo(updateAccountDTO.accountLogo());
+        setAccountName(updateAccountDTO.accountName());
+        setAccountType(updateAccountDTO.accountType());
+    }
 }

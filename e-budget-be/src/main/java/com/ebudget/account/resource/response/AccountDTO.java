@@ -1,6 +1,6 @@
 package com.ebudget.account.resource.response;
 
-import com.ebudget.account.model.enumeration.AccountType;
+import com.ebudget.account.model.enums.AccountType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
