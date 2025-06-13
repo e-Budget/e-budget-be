@@ -24,12 +24,12 @@ import java.util.UUID;
 @ApplicationScoped
 @Path("/account")
 @RequiredArgsConstructor
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class AccountResource {
     private final IAccountService accountService;
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public RestResponse<AccountDTO> addAccount(@Valid NewAccountDTO newAccountDTO) {
         AccountDTO account = accountService.addAccount(newAccountDTO);
 
@@ -38,8 +38,6 @@ public class AccountResource {
 
     @PUT
     @Path("/{accountId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public RestResponse<Void> updateAccount(@PathParam("accountId") UUID accountId, @Valid UpdateAccountDTO updateAccountDTO) {
         accountService.updateAccount(accountId, updateAccountDTO);
 
@@ -48,8 +46,6 @@ public class AccountResource {
 
     @GET
     @Path("/{accountId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public RestResponse<AccountDTO> getAccount(@PathParam("accountId") UUID accountId) {
         AccountDTO account = accountService.getAccount(accountId);
 
@@ -57,8 +53,6 @@ public class AccountResource {
     }
 
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public RestResponse<List<AccountDTO>> getAccounts() {
         List<AccountDTO> accounts = accountService.getAccounts();
 
@@ -67,8 +61,6 @@ public class AccountResource {
 
     @DELETE
     @Path("/{accountId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public RestResponse<Void> deleteAccount(@PathParam("accountId") UUID accountId) {
         accountService.deleteAccount(accountId);
 

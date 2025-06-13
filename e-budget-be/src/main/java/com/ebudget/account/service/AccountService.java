@@ -109,6 +109,12 @@ public class AccountService implements IAccountService {
             throw new InvalidParameterException();
         }
 
+        Account account = accountRepository.findById(accountId);
+
+        if(account == null) {
+            throw new AccountNotFoundException();
+        }
+
         accountRepository.deleteById(accountId);
     }
 }
