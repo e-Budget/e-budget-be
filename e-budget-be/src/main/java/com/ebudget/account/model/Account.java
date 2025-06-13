@@ -2,6 +2,7 @@ package com.ebudget.account.model;
 
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.resource.request.UpdateAccountDTO;
+import com.ebudget.transfer.model.Transfer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +22,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -43,6 +46,10 @@ public class Account {
     @Column(name = "initial_balance")
     private BigDecimal initialBalance;
     private BigDecimal balance;
+    @OneToMany(mappedBy = "fromAccount")
+    private List<Transfer> sentTransfers;
+    @OneToMany(mappedBy = "toAccount")
+    private List<Transfer> receivedTransfers;
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -54,5 +61,13 @@ public class Account {
         setAccountLogo(updateAccountDTO.accountLogo());
         setAccountName(updateAccountDTO.accountName());
         setAccountType(updateAccountDTO.accountType());
+    }
+
+    public void withdraw(BigDecimal amount) {
+        setBalance(getBalance().subtract(amount));
+    }
+
+    public void deposit(BigDecimal amount) {
+        setBalance(getBalance().add(amount));
     }
 }
