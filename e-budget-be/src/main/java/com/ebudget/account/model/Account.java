@@ -55,4 +55,12 @@ public class Account {
         setAccountName(updateAccountDTO.accountName());
         setAccountType(updateAccountDTO.accountType());
     }
+
+    public void withdraw(BigDecimal amount) {
+        setBalance(getBalance().subtract(amount));
+    }
+
+    public void deposit(BigDecimal amount) {
+        setBalance(getBalance().add(amount));
+    }
 }
