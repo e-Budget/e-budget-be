@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -173,7 +172,7 @@ public class TransferService implements ITransferService {
                         transfer.getCreatedAt(),
                         transfer.getUpdatedAt()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void processTransfer(Account senderBankAccount, Account recipientBankAccount, BigDecimal amount) {
