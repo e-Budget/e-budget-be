@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ITransferService {
-    TransferDTO makeTransfer(NewTransferDTO newTransferDTO);
-    void cancelTransfer(UUID transferId);
+    TransferDTO addTransfer(NewTransferDTO newTransferDTO);
+    void deleteTransfer(UUID transferId);
     TransferDTO getTransfer(UUID transferId);
     List<TransferDTO> getTransfers();
 }

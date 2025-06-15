@@ -28,16 +28,16 @@ public class TransferResource {
     private final ITransferService transferService;
 
     @POST
-    public RestResponse<TransferDTO> makeTransfer(@Valid NewTransferDTO newTransferDTO) {
-        TransferDTO transfer = transferService.makeTransfer(newTransferDTO);
+    public RestResponse<TransferDTO> addTransfer(@Valid NewTransferDTO newTransferDTO) {
+        TransferDTO transfer = transferService.addTransfer(newTransferDTO);
 
-        return RestResponse.status(RestResponse.Status.OK, transfer);
+        return RestResponse.status(RestResponse.Status.CREATED, transfer);
     }
 
     @DELETE
     @Path("/{transferId}")
-    public RestResponse<Void> cancelTransfer(@PathParam("transferId") UUID transferId) {
-        transferService.cancelTransfer(transferId);
+    public RestResponse<Void> deleteTransfer(@PathParam("transferId") UUID transferId) {
+        transferService.deleteTransfer(transferId);
 
         return RestResponse.status(RestResponse.Status.OK);
     }

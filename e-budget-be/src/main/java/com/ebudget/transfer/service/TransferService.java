@@ -4,7 +4,6 @@ import com.ebudget.account.model.Account;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.response.AccountDTO;
 import com.ebudget.core.exceptions.InvalidParameterException;
-import com.ebudget.transfer.exception.NoFundsAvailableException;
 import com.ebudget.transfer.exception.RecipientAccountNotFoundException;
 import com.ebudget.transfer.exception.SenderAccountNotFoundException;
 import com.ebudget.transfer.exception.TransferNotFoundException;
@@ -30,20 +29,17 @@ public class TransferService implements ITransferService {
 
     @Override
     @Transactional
-    public TransferDTO makeTransfer(NewTransferDTO newTransferDTO) {
+    public TransferDTO addTransfer(NewTransferDTO newTransferDTO) {
         Account senderBankAccount = accountRepository.findById(newTransferDTO.fromAccount());
-        Account recipientBankAccount = accountRepository.findById(newTransferDTO.toAccount());
 
         if(senderBankAccount == null) {
             throw new SenderAccountNotFoundException();
         }
 
+        Account recipientBankAccount = accountRepository.findById(newTransferDTO.toAccount());
+
         if(recipientBankAccount == null) {
             throw new RecipientAccountNotFoundException();
-        }
-
-        if(accountHasNoFunds(senderBankAccount, newTransferDTO.amount())) {
-            throw new NoFundsAvailableException();
         }
 
         processTransfer(senderBankAccount, recipientBankAccount, newTransferDTO.amount());
@@ -88,7 +84,7 @@ public class TransferService implements ITransferService {
 
     @Override
     @Transactional
-    public void cancelTransfer(UUID transferId) {
+    public void deleteTransfer(UUID transferId) {
         if(transferId == null) {
             throw new InvalidParameterException();
         }
@@ -97,10 +93,6 @@ public class TransferService implements ITransferService {
 
         if(transfer == null) {
             throw new TransferNotFoundException();
-        }
-
-        if(accountHasNoFunds(transfer.getToAccount(), transfer.getAmount())) {
-            throw new NoFundsAvailableException();
         }
 
         processTransfer(transfer.getToAccount(), transfer.getFromAccount(), transfer.getAmount());
@@ -187,9 +179,5 @@ public class TransferService implements ITransferService {
     private void processTransfer(Account senderBankAccount, Account recipientBankAccount, BigDecimal amount) {
         senderBankAccount.withdraw(amount);
         recipientBankAccount.deposit(amount);
-    }
-
-    private boolean accountHasNoFunds(Account senderBankAccount, BigDecimal amount) {
-        return senderBankAccount.getBalance().compareTo(amount) < 0;
     }
 }
