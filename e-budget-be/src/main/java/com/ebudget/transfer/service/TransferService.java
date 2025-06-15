@@ -176,7 +176,7 @@ public class TransferService implements ITransferService {
     }
 
     private void processTransfer(Account senderBankAccount, Account recipientBankAccount, BigDecimal amount) {
-        senderBankAccount.withdraw(amount);
-        recipientBankAccount.deposit(amount);
+        senderBankAccount.updateBalance(amount.negate());
+        recipientBankAccount.updateBalance(amount);
     }
 }
