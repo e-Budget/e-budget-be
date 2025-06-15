@@ -165,16 +165,16 @@ public class IncomeService implements IIncomeService {
     }
 
     private void processIncome(Account account, BigDecimal amount) {
-        account.deposit(amount);
+        account.updateBalance(amount);
     }
 
     private void processIncome(Account account, BigDecimal withdrawAmount, BigDecimal depositAmount) {
-        account.withdraw(withdrawAmount);
-        account.deposit(depositAmount);
+        account.updateBalance(withdrawAmount);
+        account.updateBalance(depositAmount);
     }
 
     private void processIncome(Account withdrawAccount, BigDecimal withdrawAmount, Account depositAccount, BigDecimal depositAmount) {
-        withdrawAccount.withdraw(withdrawAmount);
-        depositAccount.deposit(depositAmount);
+        withdrawAccount.updateBalance(withdrawAmount);
+        depositAccount.updateBalance(depositAmount);
     }
 }
