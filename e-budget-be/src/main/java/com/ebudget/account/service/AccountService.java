@@ -1,6 +1,6 @@
 package com.ebudget.account.service;
 
-import com.ebudget.account.AccountNotFoundException;
+import com.ebudget.account.exception.AccountNotFoundException;
 import com.ebudget.account.model.Account;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.request.NewAccountDTO;
@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -90,16 +89,18 @@ public class AccountService implements IAccountService {
     public List<AccountDTO> getAccounts() {
         List<Account> accounts = accountRepository.listAll();
 
-        return accounts.stream().map(account -> new AccountDTO(
-                account.getAccountId(),
-                account.getAccountLogo(),
-                account.getAccountName(),
-                account.getAccountType(),
-                account.getInitialBalance(),
-                account.getBalance(),
-                account.getCreatedAt(),
-                account.getUpdatedAt()
-        )).collect(Collectors.toList());
+        return accounts.stream()
+                .map(account -> new AccountDTO(
+                        account.getAccountId(),
+                        account.getAccountLogo(),
+                        account.getAccountName(),
+                        account.getAccountType(),
+                        account.getInitialBalance(),
+                        account.getBalance(),
+                        account.getCreatedAt(),
+                        account.getUpdatedAt()
+                ))
+                .toList();
     }
 
     @Override

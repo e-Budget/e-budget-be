@@ -1,6 +1,6 @@
 package com.ebudget.income.service;
 
-import com.ebudget.account.AccountNotFoundException;
+import com.ebudget.account.exception.AccountNotFoundException;
 import com.ebudget.account.model.Account;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.response.AccountDTO;
@@ -165,16 +165,16 @@ public class IncomeService implements IIncomeService {
     }
 
     private void processIncome(Account account, BigDecimal amount) {
-        account.updateBalance(amount);
+        account.deposit(amount);
     }
 
     private void processIncome(Account account, BigDecimal withdrawAmount, BigDecimal depositAmount) {
-        account.updateBalance(withdrawAmount);
-        account.updateBalance(depositAmount);
+        account.withdraw(withdrawAmount);
+        account.deposit(depositAmount);
     }
 
     private void processIncome(Account withdrawAccount, BigDecimal withdrawAmount, Account depositAccount, BigDecimal depositAmount) {
-        withdrawAccount.updateBalance(withdrawAmount);
-        depositAccount.updateBalance(depositAmount);
+        withdrawAccount.withdraw(withdrawAmount);
+        depositAccount.deposit(depositAmount);
     }
 }

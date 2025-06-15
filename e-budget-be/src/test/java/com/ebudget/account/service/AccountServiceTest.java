@@ -1,6 +1,6 @@
 package com.ebudget.account.service;
 
-import com.ebudget.account.AccountNotFoundException;
+import com.ebudget.account.exception.AccountNotFoundException;
 import com.ebudget.account.model.Account;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
@@ -160,6 +160,7 @@ class AccountServiceTest {
         assertThat(accountDTO.accountType()).isEqualTo(sampleAccount.getAccountType());
         assertThat(accountDTO.initialBalance()).isEqualTo(sampleAccount.getInitialBalance());
         assertThat(accountDTO.balance()).isEqualTo(sampleAccount.getBalance());
+        // should add createdAt and updatedAt
 
         verify(accountRepository, times(1)).findById(any(UUID.class));
     }

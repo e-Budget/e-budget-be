@@ -1,6 +1,6 @@
 package com.ebudget.income.service;
 
-import com.ebudget.account.AccountNotFoundException;
+import com.ebudget.account.exception.AccountNotFoundException;
 import com.ebudget.account.model.Account;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
