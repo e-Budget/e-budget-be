@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -144,7 +143,7 @@ public class IncomeService implements IIncomeService {
                         income.getCreatedAt(),
                         income.getUpdatedAt()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

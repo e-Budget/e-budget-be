@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public record IncomeDTO(
         UUID incomeId,
-        String accountDescription,
+        String incomeDescription,
         BigDecimal amount,
         AccountDTO account,
         LocalDateTime createdAt,
