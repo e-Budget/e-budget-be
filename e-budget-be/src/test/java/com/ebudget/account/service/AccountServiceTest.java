@@ -160,6 +160,7 @@ class AccountServiceTest {
         assertThat(accountDTO.accountType()).isEqualTo(sampleAccount.getAccountType());
         assertThat(accountDTO.initialBalance()).isEqualTo(sampleAccount.getInitialBalance());
         assertThat(accountDTO.balance()).isEqualTo(sampleAccount.getBalance());
+        // should add createdAt and updatedAt
 
         verify(accountRepository, times(1)).findById(any(UUID.class));
     }

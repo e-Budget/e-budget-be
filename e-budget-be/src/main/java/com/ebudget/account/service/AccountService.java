@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -90,16 +89,18 @@ public class AccountService implements IAccountService {
     public List<AccountDTO> getAccounts() {
         List<Account> accounts = accountRepository.listAll();
 
-        return accounts.stream().map(account -> new AccountDTO(
-                account.getAccountId(),
-                account.getAccountLogo(),
-                account.getAccountName(),
-                account.getAccountType(),
-                account.getInitialBalance(),
-                account.getBalance(),
-                account.getCreatedAt(),
-                account.getUpdatedAt()
-        )).collect(Collectors.toList());
+        return accounts.stream()
+                .map(account -> new AccountDTO(
+                        account.getAccountId(),
+                        account.getAccountLogo(),
+                        account.getAccountName(),
+                        account.getAccountType(),
+                        account.getInitialBalance(),
+                        account.getBalance(),
+                        account.getCreatedAt(),
+                        account.getUpdatedAt()
+                ))
+                .toList();
     }
 
     @Override
