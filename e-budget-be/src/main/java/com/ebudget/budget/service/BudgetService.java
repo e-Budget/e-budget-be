@@ -26,6 +26,10 @@ public class BudgetService implements IBudgetService {
     private final BudgetRepository budgetRepository;
     private final CategoryRepository categoryRepository;
 
+    private static final String CATEGORY = "category";
+    private static final String BUDGET_MONTH = "budgetMonth";
+    private static final String BUDGET_YEAR = "budgetYear";
+
     @Override
     @Transactional
     public BudgetDTO addBudget(NewBudgetDTO newBudgetDTO) {
@@ -37,9 +41,9 @@ public class BudgetService implements IBudgetService {
 
         if(containsBudget(category, newBudgetDTO.budgetMonth(), newBudgetDTO.budgetYear())) {
             throw new BudgetAlreadyExistsException(Map.of(
-                    "category", category.getCategoryName(),
-                    "budgetMonth", newBudgetDTO.budgetMonth(),
-                    "budgetYear", newBudgetDTO.budgetYear()
+                    CATEGORY, category.getCategoryName(),
+                    BUDGET_MONTH, newBudgetDTO.budgetMonth(),
+                    BUDGET_YEAR, newBudgetDTO.budgetYear()
             ));
         }
 
@@ -87,9 +91,9 @@ public class BudgetService implements IBudgetService {
             !updateBudgetDTO.budgetYear().equals(budget.getBudgetYear())) &&
             containsBudget(budget.getCategory(), updateBudgetDTO.budgetMonth(), updateBudgetDTO.budgetYear())) {
             throw new BudgetAlreadyExistsException(Map.of(
-                    "category", budget.getCategory().getCategoryName(),
-                    "budgetMonth", updateBudgetDTO.budgetMonth(),
-                    "budgetYear", updateBudgetDTO.budgetYear()
+                    CATEGORY, budget.getCategory().getCategoryName(),
+                    BUDGET_MONTH, updateBudgetDTO.budgetMonth(),
+                    BUDGET_YEAR, updateBudgetDTO.budgetYear()
             ));
         }
 
@@ -162,9 +166,9 @@ public class BudgetService implements IBudgetService {
 
     private boolean containsBudget(Category category, Integer budgetMonth, Integer budgetYear) {
         Long count = budgetRepository.countByCategoryMonthYear(Map.of(
-                "category", category,
-                "budgetMonth", budgetMonth,
-                "budgetYear", budgetYear
+                CATEGORY, category,
+                BUDGET_MONTH, budgetMonth,
+                BUDGET_YEAR, budgetYear
         ));
 
         return count > 0;
