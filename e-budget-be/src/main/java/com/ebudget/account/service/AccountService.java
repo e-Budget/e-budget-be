@@ -1,13 +1,12 @@
 package com.ebudget.account.service;
 
-import com.ebudget.account.exception.AccountNotFoundException;
 import com.ebudget.account.model.Account;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.request.NewAccountDTO;
 import com.ebudget.account.resource.request.UpdateAccountDTO;
 import com.ebudget.account.resource.response.AccountDTO;
 import com.ebudget.account.service.interfaces.IAccountService;
-import com.ebudget.core.exceptions.InvalidParameterException;
+import com.ebudget.core.exceptions.EntityNotFoundException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -48,14 +47,10 @@ public class AccountService implements IAccountService {
     @Override
     @Transactional
     public void updateAccount(UUID accountId, UpdateAccountDTO updateAccountDTO) {
-        if(accountId == null) {
-            throw new InvalidParameterException();
-        }
-
         Account account = accountRepository.findById(accountId);
 
         if(account == null) {
-            throw new AccountNotFoundException();
+            throw new EntityNotFoundException(Account.class, accountId);
         }
 
         account.update(updateAccountDTO);
@@ -63,14 +58,10 @@ public class AccountService implements IAccountService {
 
     @Override
     public AccountDTO getAccount(UUID accountId) {
-        if(accountId == null) {
-            throw new InvalidParameterException();
-        }
-
         Account account = accountRepository.findById(accountId);
 
         if(account == null) {
-            throw new AccountNotFoundException();
+            throw new EntityNotFoundException(Account.class, accountId);
         }
 
         return new AccountDTO(
@@ -106,14 +97,10 @@ public class AccountService implements IAccountService {
     @Override
     @Transactional
     public void deleteAccount(UUID accountId) {
-        if(accountId == null) {
-            throw new InvalidParameterException();
-        }
-
         Account account = accountRepository.findById(accountId);
 
         if(account == null) {
-            throw new AccountNotFoundException();
+            throw new EntityNotFoundException(Account.class, accountId);
         }
 
         accountRepository.deleteById(accountId);

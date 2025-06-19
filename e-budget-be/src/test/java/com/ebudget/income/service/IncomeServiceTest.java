@@ -1,11 +1,9 @@
 package com.ebudget.income.service;
 
-import com.ebudget.account.exception.AccountNotFoundException;
 import com.ebudget.account.model.Account;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
-import com.ebudget.core.exceptions.InvalidParameterException;
-import com.ebudget.income.exception.IncomeNotFoundException;
+import com.ebudget.core.exceptions.EntityNotFoundException;
 import com.ebudget.income.model.Income;
 import com.ebudget.income.repository.IncomeRepository;
 import com.ebudget.income.resource.request.NewIncomeDTO;
@@ -107,7 +105,7 @@ class IncomeServiceTest {
         );
 
         // when / then
-        assertThatExceptionOfType(AccountNotFoundException.class).isThrownBy(() -> incomeService.addIncome(newIncomeDTO));
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> incomeService.addIncome(newIncomeDTO));
 
         verify(accountRepository, times(1)).findById(any(UUID.class));
     }
@@ -174,22 +172,6 @@ class IncomeServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on update an income when incomeId is null")
-    void shouldThrowExceptionOnUpdateIncomeWhenIncomeIdIsNull() {
-        // given
-        UUID incomeId = null;
-
-        NewIncomeDTO updateIncomeDTO = new NewIncomeDTO(
-                "newIncomeDescription",
-                new BigDecimal("150.00"),
-                sampleIncomeId
-        );
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> incomeService.updateIncome(incomeId, updateIncomeDTO));
-    }
-
-    @Test
     @DisplayName("Should throw exception on update a non-existing income")
     void shouldThrowExceptionOnUpdateNonExistingIncome() {
         // given
@@ -202,7 +184,7 @@ class IncomeServiceTest {
         );
 
         // when / then
-        assertThatExceptionOfType(IncomeNotFoundException.class).isThrownBy(() -> incomeService.updateIncome(sampleIncomeId, updateIncomeDTO));
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> incomeService.updateIncome(sampleIncomeId, updateIncomeDTO));
 
         verify(incomeRepository, times(1)).findById(any(UUID.class));
     }
@@ -228,23 +210,13 @@ class IncomeServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on get an income when incomeId is null")
-    void shouldThrowExceptionOnGetIncomeWhenIncomeIdIsNull() {
-        // given
-        UUID incomeId = null;
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> incomeService.getIncome(incomeId));
-    }
-
-    @Test
     @DisplayName("Should throw exception on get a non-existing income")
     void shouldThrowExceptionOnGetNonExistingIncome() {
         // given
         when(incomeRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(IncomeNotFoundException.class).isThrownBy(() -> incomeService.getIncome(sampleIncomeId));
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> incomeService.getIncome(sampleIncomeId));
     }
 
     @Test
@@ -282,23 +254,13 @@ class IncomeServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on delete an income when incomeId is null")
-    void shouldThrowExceptionOnDeleteIncomeWhenIncomeIdIsNull() {
-        // given
-        UUID incomeId = null;
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> incomeService.deleteIncome(incomeId));
-    }
-
-    @Test
     @DisplayName("Should throw exception on delete a non-existing income")
     void shouldThrowExceptionOnDeleteNonExistingIncome() {
         // given
         when(incomeRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(IncomeNotFoundException.class).isThrownBy(() -> incomeService.deleteIncome(sampleIncomeId));
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> incomeService.deleteIncome(sampleIncomeId));
 
         verify(incomeRepository, times(1)).findById(any(UUID.class));
     }

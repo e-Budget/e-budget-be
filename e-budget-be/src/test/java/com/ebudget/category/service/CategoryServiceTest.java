@@ -1,11 +1,10 @@
 package com.ebudget.category.service;
 
-import com.ebudget.category.exception.CategoryNotFoundException;
 import com.ebudget.category.model.Category;
 import com.ebudget.category.repository.CategoryRepository;
 import com.ebudget.category.resource.request.NewCategoryDTO;
 import com.ebudget.category.resource.response.CategoryDTO;
-import com.ebudget.core.exceptions.InvalidParameterException;
+import com.ebudget.core.exceptions.EntityNotFoundException;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -85,19 +84,6 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on update a category when categoryId is null")
-    void shouldThrowExceptionOnUpdateCategoryWhenCategoryIdIsNull() {
-        // given
-        UUID categoryId = null;
-        NewCategoryDTO updateCategoryDTO = new NewCategoryDTO("updatedCategoryName");
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> {
-            categoryService.updateCategory(categoryId, updateCategoryDTO);
-        });
-    }
-
-    @Test
     @DisplayName("Should throw exception on update a non-existing category")
     void shouldThrowExceptionOnUpdateCategoryNonExistingCategory() {
         // given
@@ -106,7 +92,7 @@ class CategoryServiceTest {
         when(categoryRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(CategoryNotFoundException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
             categoryService.updateCategory(sampleCategoryId, updateCategoryDTO);
         });
 
@@ -133,25 +119,13 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw an exception on get a category when categoryId is null")
-    void shouldThrowExceptionOnGetCategoryWhenCategoryIdIsNull() {
-        // given
-        UUID categoryId = null;
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> {
-           categoryService.getCategory(categoryId);
-        });
-    }
-
-    @Test
     @DisplayName("Should throw exception on get a non-existing category")
     void shouldThrowExceptionOnGetCategoryNonExistingCategory() {
         // given
         when(categoryRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(CategoryNotFoundException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
             categoryService.getCategory(sampleCategoryId);
         });
 
@@ -190,25 +164,13 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw an exception on delete a category when categoryId is null")
-    void shouldThrowExceptionOnDeleteCategoryWhenCategoryIdIsNull() {
-        // given
-        UUID categoryId = null;
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> {
-            categoryService.deleteCategory(categoryId);
-        });
-    }
-
-    @Test
     @DisplayName("Should throw exception on delete a non-existing category")
     void shouldThrowExceptionOnDeleteCategoryNonExistingCategory() {
         // given
         when(categoryRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(CategoryNotFoundException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
             categoryService.deleteCategory(sampleCategoryId);
         });
 

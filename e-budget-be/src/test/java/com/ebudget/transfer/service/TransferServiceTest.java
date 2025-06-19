@@ -3,10 +3,9 @@ package com.ebudget.transfer.service;
 import com.ebudget.account.model.Account;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
-import com.ebudget.core.exceptions.InvalidParameterException;
+import com.ebudget.core.exceptions.EntityNotFoundException;
 import com.ebudget.transfer.exception.RecipientAccountNotFoundException;
 import com.ebudget.transfer.exception.SenderAccountNotFoundException;
-import com.ebudget.transfer.exception.TransferNotFoundException;
 import com.ebudget.transfer.model.Transfer;
 import com.ebudget.transfer.repository.TransferRepository;
 import com.ebudget.transfer.resource.request.NewTransferDTO;
@@ -168,23 +167,13 @@ class TransferServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on delete a transfer when transferId is null")
-    void shouldThrowExceptionOnDeleteTransferWhenTransferIdIsNull() {
-        // given
-        UUID transferId = null;
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> transferService.deleteTransfer(transferId));
-    }
-
-    @Test
     @DisplayName("Should throw exception on delete a non-existing transfer")
     void shouldThrowExceptionOnDeleteNonExistingTransfer() {
         // given
         when(transferRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(TransferNotFoundException.class).isThrownBy(() -> transferService.deleteTransfer(sampleTransferId));
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> transferService.deleteTransfer(sampleTransferId));
 
         verify(transferRepository, times(1)).findById(any(UUID.class));
     }
@@ -211,23 +200,13 @@ class TransferServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on get a transfer when transferId is null")
-    void shouldThrowExceptionOnGetTransferWhenTransferIdIsNull() {
-        // given
-        UUID transferId = null;
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> transferService.getTransfer(transferId));
-    }
-
-    @Test
     @DisplayName("Should throw exception on get a non-existing transfer")
     void shouldThrowExceptionOnGetNonExistingTransfer() {
         // given
         when(transferRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(TransferNotFoundException.class).isThrownBy(() -> transferService.getTransfer(sampleTransferId));
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> transferService.getTransfer(sampleTransferId));
 
         verify(transferRepository, times(1)).findById(any(UUID.class));
     }
