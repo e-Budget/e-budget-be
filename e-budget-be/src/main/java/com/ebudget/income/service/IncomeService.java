@@ -1,11 +1,9 @@
 package com.ebudget.income.service;
 
-import com.ebudget.account.exception.AccountNotFoundException;
 import com.ebudget.account.model.Account;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.response.AccountDTO;
-import com.ebudget.core.exceptions.InvalidParameterException;
-import com.ebudget.income.exception.IncomeNotFoundException;
+import com.ebudget.core.exceptions.EntityNotFoundException;
 import com.ebudget.income.model.Income;
 import com.ebudget.income.repository.IncomeRepository;
 import com.ebudget.income.resource.request.NewIncomeDTO;
@@ -31,7 +29,7 @@ public class IncomeService implements IIncomeService {
         Account account = accountRepository.findById(newIncomeDTO.accountId());
 
         if(account == null) {
-            throw new AccountNotFoundException();
+            throw new EntityNotFoundException(Account.class, newIncomeDTO.accountId());
         }
 
         processIncome(account, newIncomeDTO.amount());
@@ -66,14 +64,10 @@ public class IncomeService implements IIncomeService {
     @Override
     @Transactional
     public void updateIncome(UUID incomeId, NewIncomeDTO updateIncomeDTO) {
-        if(incomeId == null) {
-            throw new InvalidParameterException();
-        }
-
         Income income = incomeRepository.findById(incomeId);
 
         if(income == null) {
-            throw new IncomeNotFoundException();
+            throw new EntityNotFoundException(Income.class, incomeId);
         }
 
         if(income.getAccount().getAccountId().equals(updateIncomeDTO.accountId())) {
@@ -92,14 +86,10 @@ public class IncomeService implements IIncomeService {
 
     @Override
     public IncomeDTO getIncome(UUID incomeId) {
-        if(incomeId == null) {
-            throw new InvalidParameterException();
-        }
-
         Income income = incomeRepository.findById(incomeId);
 
         if(income == null) {
-            throw new IncomeNotFoundException();
+            throw new EntityNotFoundException(Income.class, incomeId);
         }
 
         return new IncomeDTO(
@@ -149,14 +139,10 @@ public class IncomeService implements IIncomeService {
     @Override
     @Transactional
     public void deleteIncome(UUID incomeId) {
-        if(incomeId == null) {
-            throw new InvalidParameterException();
-        }
-
         Income income = incomeRepository.findById(incomeId);
 
         if(income == null) {
-            throw new IncomeNotFoundException();
+            throw new EntityNotFoundException(Income.class, incomeId);
         }
 
         processIncome(income.getAccount(), income.getAmount().negate());

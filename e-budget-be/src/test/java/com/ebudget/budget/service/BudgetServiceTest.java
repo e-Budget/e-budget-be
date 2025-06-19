@@ -1,16 +1,14 @@
 package com.ebudget.budget.service;
 
 import com.ebudget.budget.exception.BudgetAlreadyExistsException;
-import com.ebudget.budget.exception.BudgetNotFoundException;
 import com.ebudget.budget.model.Budget;
 import com.ebudget.budget.repository.BudgetRepository;
 import com.ebudget.budget.resource.request.NewBudgetDTO;
 import com.ebudget.budget.resource.request.UpdateBudgetDTO;
 import com.ebudget.budget.resource.response.BudgetDTO;
-import com.ebudget.category.exception.CategoryNotFoundException;
 import com.ebudget.category.model.Category;
 import com.ebudget.category.repository.CategoryRepository;
-import com.ebudget.core.exceptions.InvalidParameterException;
+import com.ebudget.core.exceptions.EntityNotFoundException;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -112,7 +110,7 @@ class BudgetServiceTest {
         );
 
         // when / then
-        assertThatExceptionOfType(CategoryNotFoundException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
             budgetService.addBudget(newBudgetDTO);
         });
 
@@ -171,24 +169,6 @@ class BudgetServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw an exception on update a budget when budgetId is null")
-    void shouldThrowExceptionOnUpdateBudgetWhenBudgetIdIsNull() {
-        // given
-        UUID budgetId = null;
-
-        UpdateBudgetDTO updateBudgetDTO = new UpdateBudgetDTO(
-                7,
-                2026,
-                new BigDecimal("10.00")
-        );
-
-        // when // then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> {
-           budgetService.updateBudget(budgetId, updateBudgetDTO);
-        });
-    }
-
-    @Test
     @DisplayName("Should throw an exception on update a non-existing budget")
     void shouldThrowExceptionOnUpdateBudgetNonExistingBudget() {
         when(budgetRepository.findById(any(UUID.class))).thenReturn(null);
@@ -201,7 +181,7 @@ class BudgetServiceTest {
         );
 
         // when // then
-        assertThatExceptionOfType(BudgetNotFoundException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
             budgetService.updateBudget(sampleBudgetId, updateBudgetDTO);
         });
 
@@ -255,25 +235,13 @@ class BudgetServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on get a budget when budgetId is null")
-    void shouldThrowExceptionOnGetBudgetWhenBudgetIdIsNull() {
-        // given
-        UUID budgetId = null;
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> {
-           budgetService.getBudget(budgetId);
-        });
-    }
-
-    @Test
     @DisplayName("Should throw exception on get a non-existing budget")
     void shouldThrowExceptionOnGetNonExistingBudget() {
         // given
         when(budgetRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(BudgetNotFoundException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
            budgetService.getBudget(sampleBudgetId);
         });
 
@@ -312,25 +280,13 @@ class BudgetServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on delete a budget when budgetId is null")
-    void shouldThrowExceptionOnDeleteBudgetWhenBudgetIdIsNull() {
-        // given
-        UUID budgetId = null;
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> {
-            budgetService.deleteBudget(budgetId);
-        });
-    }
-
-    @Test
     @DisplayName("Should throw exception on delete a non-existing budget")
     void shouldThrowExceptionOnDeleteNonExistingBudget() {
         // given
         when(budgetRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(BudgetNotFoundException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
             budgetService.deleteBudget(sampleBudgetId);
         });
 

@@ -1,13 +1,12 @@
 package com.ebudget.account.service;
 
-import com.ebudget.account.exception.AccountNotFoundException;
 import com.ebudget.account.model.Account;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.request.NewAccountDTO;
 import com.ebudget.account.resource.request.UpdateAccountDTO;
 import com.ebudget.account.resource.response.AccountDTO;
-import com.ebudget.core.exceptions.InvalidParameterException;
+import com.ebudget.core.exceptions.EntityNotFoundException;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -107,24 +106,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on update an account when accountId is null")
-    void shouldThrowExceptionOnUpdateAccountWhenAccountIdIsNull() {
-        // given
-        UUID accountId = null;
-
-        UpdateAccountDTO updateAccountDTO = new UpdateAccountDTO(
-                "newAccountLogo",
-                "newAccountName",
-                AccountType.BENEFIT_ACCOUNT
-        );
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> {
-            accountService.updateAccount(accountId, updateAccountDTO);
-        });
-    }
-
-    @Test
     @DisplayName("Should throw exception on update a non-existing account")
     void shouldThrowExceptionOnUpdateNonExistingAccount() {
         // given
@@ -137,7 +118,7 @@ class AccountServiceTest {
         when(accountRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(AccountNotFoundException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
             accountService.updateAccount(sampleAccountId, updateAccountDTO);
         });
 
@@ -166,25 +147,13 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on get an account when accountId is null")
-    void shouldThrowExceptionOnGetAccountWhenAccountIdIsNull() {
-        // given
-        UUID accountId = null;
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> {
-            accountService.getAccount(accountId);
-        });
-    }
-
-    @Test
     @DisplayName("Should throw exception on get an non-existing account")
     void shouldThrowExceptionOnGetNonExistingAccount() {
         // given
         when(accountRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(AccountNotFoundException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
             accountService.getAccount(sampleAccountId);
         });
 
@@ -221,25 +190,13 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on delete an account when accountId is null")
-    void shouldThrowExceptionOnDeleteAnAccountWhenAccountIdIsNull() {
-        // given
-        UUID accountId = null;
-
-        // when / then
-        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> {
-            accountService.deleteAccount(accountId);
-        });
-    }
-
-    @Test
     @DisplayName("Should throw exception on delete a non-existing account")
     void shouldThrowExceptionOnDeleteNonExistingAccount() {
         // given
         when(accountRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
-        assertThatExceptionOfType(AccountNotFoundException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
             accountService.deleteAccount(sampleAccountId);
         });
 

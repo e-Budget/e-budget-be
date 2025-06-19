@@ -1,18 +1,16 @@
 package com.ebudget.budget.service;
 
 import com.ebudget.budget.exception.BudgetAlreadyExistsException;
-import com.ebudget.budget.exception.BudgetNotFoundException;
 import com.ebudget.budget.model.Budget;
 import com.ebudget.budget.repository.BudgetRepository;
 import com.ebudget.budget.resource.request.NewBudgetDTO;
 import com.ebudget.budget.resource.request.UpdateBudgetDTO;
 import com.ebudget.budget.resource.response.BudgetDTO;
 import com.ebudget.budget.service.interfaces.IBudgetService;
-import com.ebudget.category.exception.CategoryNotFoundException;
 import com.ebudget.category.model.Category;
 import com.ebudget.category.repository.CategoryRepository;
 import com.ebudget.category.resource.response.CategoryDTO;
-import com.ebudget.core.exceptions.InvalidParameterException;
+import com.ebudget.core.exceptions.EntityNotFoundException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +32,15 @@ public class BudgetService implements IBudgetService {
         Category category = categoryRepository.findById(newBudgetDTO.categoryId());
 
         if(category == null) {
-            throw new CategoryNotFoundException();
+            throw new EntityNotFoundException(Category.class, newBudgetDTO.categoryId());
         }
 
         if(containsBudget(category, newBudgetDTO.budgetMonth(), newBudgetDTO.budgetYear())) {
-            throw new BudgetAlreadyExistsException();
+            throw new BudgetAlreadyExistsException(Map.of(
+                    "category", category.getCategoryName(),
+                    "budgetMonth", newBudgetDTO.budgetMonth(),
+                    "budgetYear", newBudgetDTO.budgetYear()
+            ));
         }
 
         Budget budget = Budget.builder()
@@ -75,20 +77,20 @@ public class BudgetService implements IBudgetService {
     @Override
     @Transactional
     public void updateBudget(UUID budgetId, UpdateBudgetDTO updateBudgetDTO) {
-        if(budgetId == null) {
-            throw new InvalidParameterException();
-        }
-
         Budget budget = budgetRepository.findById(budgetId);
 
         if(budget == null) {
-            throw new BudgetNotFoundException();
+            throw new EntityNotFoundException(Budget.class, budgetId);
         }
 
         if((!updateBudgetDTO.budgetMonth().equals(budget.getBudgetMonth()) ||
             !updateBudgetDTO.budgetYear().equals(budget.getBudgetYear())) &&
             containsBudget(budget.getCategory(), updateBudgetDTO.budgetMonth(), updateBudgetDTO.budgetYear())) {
-            throw new BudgetAlreadyExistsException();
+            throw new BudgetAlreadyExistsException(Map.of(
+                    "category", budget.getCategory().getCategoryName(),
+                    "budgetMonth", updateBudgetDTO.budgetMonth(),
+                    "budgetYear", updateBudgetDTO.budgetYear()
+            ));
         }
 
         budget.update(updateBudgetDTO);
@@ -96,14 +98,10 @@ public class BudgetService implements IBudgetService {
 
     @Override
     public BudgetDTO getBudget(UUID budgetId) {
-        if(budgetId == null) {
-            throw new InvalidParameterException();
-        }
-
         Budget budget = budgetRepository.findById(budgetId);
 
         if(budget == null) {
-            throw new BudgetNotFoundException();
+            throw new EntityNotFoundException(Budget.class, budgetId);
         }
 
         return new BudgetDTO(
@@ -153,14 +151,10 @@ public class BudgetService implements IBudgetService {
     @Override
     @Transactional
     public void deleteBudget(UUID budgetId) {
-        if(budgetId == null) {
-            throw new InvalidParameterException();
-        }
-
         Budget budget = budgetRepository.findById(budgetId);
 
         if(budget == null) {
-            throw new BudgetNotFoundException();
+            throw new EntityNotFoundException(Budget.class, budgetId);
         }
 
         budgetRepository.delete(budget);

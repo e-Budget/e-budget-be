@@ -1,12 +1,11 @@
 package com.ebudget.category.service;
 
-import com.ebudget.category.exception.CategoryNotFoundException;
 import com.ebudget.category.model.Category;
 import com.ebudget.category.repository.CategoryRepository;
 import com.ebudget.category.resource.request.NewCategoryDTO;
 import com.ebudget.category.resource.response.CategoryDTO;
 import com.ebudget.category.service.interfaces.ICategoryService;
-import com.ebudget.core.exceptions.InvalidParameterException;
+import com.ebudget.core.exceptions.EntityNotFoundException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,14 +38,10 @@ public class CategoryService implements ICategoryService {
     @Override
     @Transactional
     public void updateCategory(UUID categoryId, NewCategoryDTO updateCategoryDTO) {
-        if(categoryId == null) {
-            throw new InvalidParameterException();
-        }
-
         Category category = categoryRepository.findById(categoryId);
 
         if(category == null) {
-            throw new CategoryNotFoundException();
+            throw new EntityNotFoundException(Category.class, categoryId);
         }
 
         category.update(updateCategoryDTO);
@@ -54,14 +49,10 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public CategoryDTO getCategory(UUID categoryId) {
-        if(categoryId == null) {
-            throw new InvalidParameterException();
-        }
-
         Category category = categoryRepository.findById(categoryId);
 
         if(category == null) {
-            throw new CategoryNotFoundException();
+            throw new EntityNotFoundException(Category.class, categoryId);
         }
 
         return new CategoryDTO(
@@ -89,14 +80,10 @@ public class CategoryService implements ICategoryService {
     @Override
     @Transactional
     public void deleteCategory(UUID categoryId) {
-        if(categoryId == null) {
-            throw new InvalidParameterException();
-        }
-
         Category category = categoryRepository.findById(categoryId);
 
         if(category == null) {
-            throw new CategoryNotFoundException();
+            throw new EntityNotFoundException(Category.class, categoryId);
         }
 
         categoryRepository.delete(category);
