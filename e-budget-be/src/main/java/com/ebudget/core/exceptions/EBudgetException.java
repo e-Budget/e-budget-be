@@ -10,7 +10,7 @@ import java.util.Map;
 public class EBudgetException extends RuntimeException {
     private final String exception;
     private final String message;
-    private final Map<String, Object> details;
+    private final transient Map<String, Object> details;
     @Getter
     private final RestResponse.Status status;
 
