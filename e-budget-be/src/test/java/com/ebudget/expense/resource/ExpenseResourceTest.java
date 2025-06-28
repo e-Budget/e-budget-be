@@ -1,6 +1,7 @@
 package com.ebudget.expense.resource;
 
 import com.ebudget.account.model.Account;
+import com.ebudget.account.model.enums.AccountLogo;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.budget.model.Budget;
@@ -71,7 +72,7 @@ class ExpenseResourceTest {
         budgetRepository.persistAndFlush(sampleBudget);
 
         sampleAccount = Account.builder()
-                .accountLogo("accountLogo")
+                .accountLogo(AccountLogo.NONE)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal("100.00"))
@@ -131,8 +132,8 @@ class ExpenseResourceTest {
         assertThat(response.getExpenseYear()).isEqualTo(newExpenseDTO.expenseYear());
         assertThat(response.getDate()).isEqualTo(newExpenseDTO.date());
         assertThat(response.getAmount()).isEqualTo(newExpenseDTO.amount());
-        assertThat(response.getCategory().categoryId()).isEqualTo(newExpenseDTO.categoryId());
-        assertThat(response.getAccount().accountId()).isEqualTo(newExpenseDTO.accountId());
+        assertThat(response.getCategory().getCategoryId()).isEqualTo(newExpenseDTO.categoryId());
+        assertThat(response.getAccount().getAccountId()).isEqualTo(newExpenseDTO.accountId());
         assertThat(response.getCreatedAt()).isNotNull();
         assertThat(response.getCreatedAt()).isInstanceOf(LocalDateTime.class);
         assertThat(response.getUpdatedAt()).isNotNull();
@@ -180,8 +181,8 @@ class ExpenseResourceTest {
         assertThat(response.getExpenseYear()).isEqualTo(sampleExpense.getExpenseYear());
         assertThat(response.getDate()).isEqualTo(sampleExpense.getDate());
         assertThat(response.getAmount()).isEqualTo(sampleExpense.getAmount());
-        assertThat(response.getCategory().categoryId()).isEqualTo(sampleExpense.getCategory().getCategoryId());
-        assertThat(response.getAccount().accountId()).isEqualTo(sampleExpense.getAccount().getAccountId());
+        assertThat(response.getCategory().getCategoryId()).isEqualTo(sampleExpense.getCategory().getCategoryId());
+        assertThat(response.getAccount().getAccountId()).isEqualTo(sampleExpense.getAccount().getAccountId());
         assertThat(response.getCreatedAt()).isEqualTo(sampleExpense.getCreatedAt());
         assertThat(response.getUpdatedAt()).isEqualTo(sampleExpense.getUpdatedAt());
     }
@@ -206,8 +207,8 @@ class ExpenseResourceTest {
         assertThat(response.getFirst().getExpenseYear()).isEqualTo(sampleExpense.getExpenseYear());
         assertThat(response.getFirst().getDate()).isEqualTo(sampleExpense.getDate());
         assertThat(response.getFirst().getAmount()).isEqualTo(sampleExpense.getAmount());
-        assertThat(response.getFirst().getCategory().categoryId()).isEqualTo(sampleExpense.getCategory().getCategoryId());
-        assertThat(response.getFirst().getAccount().accountId()).isEqualTo(sampleExpense.getAccount().getAccountId());
+        assertThat(response.getFirst().getCategory().getCategoryId()).isEqualTo(sampleExpense.getCategory().getCategoryId());
+        assertThat(response.getFirst().getAccount().getAccountId()).isEqualTo(sampleExpense.getAccount().getAccountId());
         assertThat(response.getFirst().getCreatedAt()).isEqualTo(sampleExpense.getCreatedAt());
         assertThat(response.getFirst().getUpdatedAt()).isEqualTo(sampleExpense.getUpdatedAt());
     }

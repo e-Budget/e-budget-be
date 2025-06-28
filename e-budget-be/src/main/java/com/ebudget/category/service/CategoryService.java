@@ -3,6 +3,7 @@ package com.ebudget.category.service;
 import com.ebudget.category.model.Category;
 import com.ebudget.category.repository.CategoryRepository;
 import com.ebudget.category.resource.request.NewCategoryDTO;
+import com.ebudget.category.resource.request.UpdateCategoryDTO;
 import com.ebudget.category.resource.response.CategoryDTO;
 import com.ebudget.category.service.interfaces.ICategoryService;
 import com.ebudget.core.exceptions.EntityNotFoundException;
@@ -27,17 +28,12 @@ public class CategoryService implements ICategoryService {
 
         categoryRepository.persistAndFlush(category);
 
-        return new CategoryDTO(
-                category.getCategoryId(),
-                category.getCategoryName(),
-                category.getCreatedAt(),
-                category.getUpdatedAt()
-        );
+        return new CategoryDTO(category);
     }
 
     @Override
     @Transactional
-    public void updateCategory(UUID categoryId, NewCategoryDTO updateCategoryDTO) {
+    public void updateCategory(UUID categoryId, UpdateCategoryDTO updateCategoryDTO) {
         Category category = categoryRepository.findById(categoryId);
 
         if(category == null) {
@@ -55,12 +51,7 @@ public class CategoryService implements ICategoryService {
             throw new EntityNotFoundException(Category.class, categoryId);
         }
 
-        return new CategoryDTO(
-                category.getCategoryId(),
-                category.getCategoryName(),
-                category.getCreatedAt(),
-                category.getUpdatedAt()
-        );
+        return new CategoryDTO(category);
     }
 
     @Override
@@ -68,12 +59,7 @@ public class CategoryService implements ICategoryService {
         List<Category> categories = categoryRepository.listAll();
 
         return categories.stream()
-                .map(category -> new CategoryDTO(
-                        category.getCategoryId(),
-                        category.getCategoryName(),
-                        category.getCreatedAt(),
-                        category.getUpdatedAt()
-                ))
+                .map(CategoryDTO::new)
                 .toList();
     }
 

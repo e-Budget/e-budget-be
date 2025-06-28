@@ -64,13 +64,13 @@ class CategoryResourceTest {
             .extract()
             .as(new TypeRef<CategoryDTO>() {});
 
-        assertThat(response.categoryId()).isNotNull();
-        assertThat(response.categoryId()).isInstanceOf(UUID.class);
-        assertThat(response.categoryName()).isEqualTo(newCategoryDTO.categoryName());
-        assertThat(response.createdAt()).isNotNull();
-        assertThat(response.createdAt()).isInstanceOf(LocalDateTime.class);
-        assertThat(response.updatedAt()).isNotNull();
-        assertThat(response.updatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getCategoryId()).isNotNull();
+        assertThat(response.getCategoryId()).isInstanceOf(UUID.class);
+        assertThat(response.getCategoryName()).isEqualTo(newCategoryDTO.categoryName());
+        assertThat(response.getCreatedAt()).isNotNull();
+        assertThat(response.getCreatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getUpdatedAt()).isNotNull();
+        assertThat(response.getUpdatedAt()).isInstanceOf(LocalDateTime.class);
 
     }
 
@@ -101,10 +101,10 @@ class CategoryResourceTest {
             .extract()
             .as(new TypeRef<CategoryDTO>() {});
 
-        assertThat(response.categoryId()).isEqualTo(sampleCategory.getCategoryId());
-        assertThat(response.categoryName()).isEqualTo(sampleCategory.getCategoryName());
-        assertThat(response.createdAt()).isEqualTo(sampleCategory.getCreatedAt());
-        assertThat(response.updatedAt()).isEqualTo(sampleCategory.getUpdatedAt());
+        assertThat(response.getCategoryId()).isEqualTo(sampleCategory.getCategoryId());
+        assertThat(response.getCategoryName()).isEqualTo(sampleCategory.getCategoryName());
+        assertThat(response.getCreatedAt()).isEqualTo(sampleCategory.getCreatedAt());
+        assertThat(response.getUpdatedAt()).isEqualTo(sampleCategory.getUpdatedAt());
     }
 
     @Test
@@ -121,10 +121,10 @@ class CategoryResourceTest {
             .as(new TypeRef<List<CategoryDTO>>() {});
 
         assertThat(response).hasSize(1);
-        assertThat(response.getFirst().categoryId()).isEqualTo(sampleCategory.getCategoryId());
-        assertThat(response.getFirst().categoryName()).isEqualTo(sampleCategory.getCategoryName());
-        assertThat(response.getFirst().createdAt()).isEqualTo(sampleCategory.getCreatedAt());
-        assertThat(response.getFirst().updatedAt()).isEqualTo(sampleCategory.getUpdatedAt());
+        assertThat(response.getFirst().getCategoryId()).isEqualTo(sampleCategory.getCategoryId());
+        assertThat(response.getFirst().getCategoryName()).isEqualTo(sampleCategory.getCategoryName());
+        assertThat(response.getFirst().getCreatedAt()).isEqualTo(sampleCategory.getCreatedAt());
+        assertThat(response.getFirst().getUpdatedAt()).isEqualTo(sampleCategory.getUpdatedAt());
     }
 
     @Test

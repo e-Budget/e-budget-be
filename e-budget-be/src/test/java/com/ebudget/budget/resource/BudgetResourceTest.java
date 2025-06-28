@@ -89,19 +89,19 @@ class BudgetResourceTest {
             .extract()
             .as(new TypeRef<BudgetDTO>() {});
 
-        assertThat(response.budgetId()).isNotNull();
-        assertThat(response.budgetId()).isInstanceOf(UUID.class);
-        assertThat(response.budgetMonth()).isEqualTo(newBudgetDTO.budgetMonth());
-        assertThat(response.budgetYear()).isEqualTo(newBudgetDTO.budgetYear());
-        assertThat(response.category().categoryId()).isEqualTo(newBudgetDTO.categoryId());
-        assertThat(response.monthlyBudget()).isEqualTo(newBudgetDTO.monthlyBudget());
-        assertThat(response.monthlyBudgetUsed()).isEqualTo(new BigDecimal("0.00"));
-        assertThat(response.monthlyBudgetUsedPercentage()).isEqualTo(new BigDecimal("0.00"));
-        assertThat(response.monthlyBudgetBalance()).isEqualTo(newBudgetDTO.monthlyBudget());
-        assertThat(response.createdAt()).isNotNull();
-        assertThat(response.createdAt()).isInstanceOf(LocalDateTime.class);
-        assertThat(response.updatedAt()).isNotNull();
-        assertThat(response.updatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getBudgetId()).isNotNull();
+        assertThat(response.getBudgetId()).isInstanceOf(UUID.class);
+        assertThat(response.getBudgetMonth()).isEqualTo(newBudgetDTO.budgetMonth());
+        assertThat(response.getBudgetYear()).isEqualTo(newBudgetDTO.budgetYear());
+        assertThat(response.getCategory().getCategoryId()).isEqualTo(newBudgetDTO.categoryId());
+        assertThat(response.getMonthlyBudget()).isEqualTo(newBudgetDTO.monthlyBudget());
+        assertThat(response.getMonthlyBudgetUsed()).isEqualTo(new BigDecimal("0.00"));
+        assertThat(response.getMonthlyBudgetUsedPercentage()).isEqualTo(new BigDecimal("0.00"));
+        assertThat(response.getMonthlyBudgetBalance()).isEqualTo(newBudgetDTO.monthlyBudget());
+        assertThat(response.getCreatedAt()).isNotNull();
+        assertThat(response.getCreatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getUpdatedAt()).isNotNull();
+        assertThat(response.getUpdatedAt()).isInstanceOf(LocalDateTime.class);
     }
 
     @Test
@@ -135,18 +135,18 @@ class BudgetResourceTest {
             .extract()
             .as(new TypeRef<BudgetDTO>() {});
 
-        assertThat(response.budgetId()).isEqualTo(sampleBudget.getBudgetId());
-        assertThat(response.budgetMonth()).isEqualTo(sampleBudget.getBudgetMonth());
-        assertThat(response.budgetYear()).isEqualTo(sampleBudget.getBudgetYear());
-        assertThat(response.category().categoryId()).isEqualTo(sampleBudget.getCategory().getCategoryId());
-        assertThat(response.monthlyBudget()).isEqualTo(sampleBudget.getMonthlyBudget());
-        assertThat(response.monthlyBudgetUsed()).isEqualTo(sampleBudget.getMonthlyBudgetUsed());
-        assertThat(response.monthlyBudgetUsedPercentage()).isEqualTo(sampleBudget.getMonthlyBudgetUsedPercentage());
-        assertThat(response.monthlyBudgetBalance()).isEqualTo(sampleBudget.getMonthlyBudgetBalance());
-        assertThat(response.createdAt()).isNotNull();
-        assertThat(response.createdAt()).isInstanceOf(LocalDateTime.class);
-        assertThat(response.updatedAt()).isNotNull();
-        assertThat(response.updatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getBudgetId()).isEqualTo(sampleBudget.getBudgetId());
+        assertThat(response.getBudgetMonth()).isEqualTo(sampleBudget.getBudgetMonth());
+        assertThat(response.getBudgetYear()).isEqualTo(sampleBudget.getBudgetYear());
+        assertThat(response.getCategory().getCategoryId()).isEqualTo(sampleBudget.getCategory().getCategoryId());
+        assertThat(response.getMonthlyBudget()).isEqualTo(sampleBudget.getMonthlyBudget());
+        assertThat(response.getMonthlyBudgetUsed()).isEqualTo(sampleBudget.getMonthlyBudgetUsed());
+        assertThat(response.getMonthlyBudgetUsedPercentage()).isEqualTo(sampleBudget.getMonthlyBudgetUsedPercentage());
+        assertThat(response.getMonthlyBudgetBalance()).isEqualTo(sampleBudget.getMonthlyBudgetBalance());
+        assertThat(response.getCreatedAt()).isNotNull();
+        assertThat(response.getCreatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getUpdatedAt()).isNotNull();
+        assertThat(response.getUpdatedAt()).isInstanceOf(LocalDateTime.class);
     }
 
     @Test
@@ -163,18 +163,18 @@ class BudgetResourceTest {
             .as(new TypeRef<List<BudgetDTO>>() {});
 
         assertThat(response).hasSize(1);
-        assertThat(response.getFirst().budgetId()).isEqualTo(sampleBudget.getBudgetId());
-        assertThat(response.getFirst().budgetMonth()).isEqualTo(sampleBudget.getBudgetMonth());
-        assertThat(response.getFirst().budgetYear()).isEqualTo(sampleBudget.getBudgetYear());
-        assertThat(response.getFirst().category().categoryId()).isEqualTo(sampleBudget.getCategory().getCategoryId());
-        assertThat(response.getFirst().monthlyBudget()).isEqualTo(sampleBudget.getMonthlyBudget());
-        assertThat(response.getFirst().monthlyBudgetUsed()).isEqualTo(sampleBudget.getMonthlyBudgetUsed());
-        assertThat(response.getFirst().monthlyBudgetUsedPercentage()).isEqualTo(sampleBudget.getMonthlyBudgetUsedPercentage());
-        assertThat(response.getFirst().monthlyBudgetBalance()).isEqualTo(sampleBudget.getMonthlyBudgetBalance());
-        assertThat(response.getFirst().createdAt()).isNotNull();
-        assertThat(response.getFirst().createdAt()).isInstanceOf(LocalDateTime.class);
-        assertThat(response.getFirst().updatedAt()).isNotNull();
-        assertThat(response.getFirst().updatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getFirst().getBudgetId()).isEqualTo(sampleBudget.getBudgetId());
+        assertThat(response.getFirst().getBudgetMonth()).isEqualTo(sampleBudget.getBudgetMonth());
+        assertThat(response.getFirst().getBudgetYear()).isEqualTo(sampleBudget.getBudgetYear());
+        assertThat(response.getFirst().getCategory().getCategoryId()).isEqualTo(sampleBudget.getCategory().getCategoryId());
+        assertThat(response.getFirst().getMonthlyBudget()).isEqualTo(sampleBudget.getMonthlyBudget());
+        assertThat(response.getFirst().getMonthlyBudgetUsed()).isEqualTo(sampleBudget.getMonthlyBudgetUsed());
+        assertThat(response.getFirst().getMonthlyBudgetUsedPercentage()).isEqualTo(sampleBudget.getMonthlyBudgetUsedPercentage());
+        assertThat(response.getFirst().getMonthlyBudgetBalance()).isEqualTo(sampleBudget.getMonthlyBudgetBalance());
+        assertThat(response.getFirst().getCreatedAt()).isNotNull();
+        assertThat(response.getFirst().getCreatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getFirst().getUpdatedAt()).isNotNull();
+        assertThat(response.getFirst().getUpdatedAt()).isInstanceOf(LocalDateTime.class);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.ebudget.category.model;
 
-import com.ebudget.category.resource.request.NewCategoryDTO;
+import com.ebudget.category.resource.request.UpdateCategoryDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,7 +38,7 @@ public class Category {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public void update(NewCategoryDTO updateCategoryDTO) {
+    public void update(UpdateCategoryDTO updateCategoryDTO) {
         setCategoryName(updateCategoryDTO.categoryName());
     }
 }

@@ -1,6 +1,7 @@
 package com.ebudget.income.resource;
 
 import com.ebudget.account.model.Account;
+import com.ebudget.account.model.enums.AccountLogo;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.income.model.Income;
@@ -43,7 +44,7 @@ class IncomeResourceTest {
     @Transactional
     void setup() {
         sampleAccount = Account.builder()
-                .accountLogo("accountLogo")
+                .accountLogo(AccountLogo.NONE)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal("0.00"))
@@ -88,15 +89,15 @@ class IncomeResourceTest {
             .extract()
             .as(new TypeRef<IncomeDTO>() {});
 
-        assertThat(response.incomeId()).isNotNull();
-        assertThat(response.incomeId()).isInstanceOf(UUID.class);
-        assertThat(response.incomeDescription()).isEqualTo(newIncomeDTO.incomeDescription());
-        assertThat(response.amount()).isEqualTo(newIncomeDTO.amount());
-        assertThat(response.account().accountId()).isEqualTo(newIncomeDTO.accountId());
-        assertThat(response.createdAt()).isNotNull();
-        assertThat(response.createdAt()).isInstanceOf(LocalDateTime.class);
-        assertThat(response.updatedAt()).isNotNull();
-        assertThat(response.updatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getIncomeId()).isNotNull();
+        assertThat(response.getIncomeId()).isInstanceOf(UUID.class);
+        assertThat(response.getIncomeDescription()).isEqualTo(newIncomeDTO.incomeDescription());
+        assertThat(response.getAmount()).isEqualTo(newIncomeDTO.amount());
+        assertThat(response.getAccount().getAccountId()).isEqualTo(newIncomeDTO.accountId());
+        assertThat(response.getCreatedAt()).isNotNull();
+        assertThat(response.getCreatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getUpdatedAt()).isNotNull();
+        assertThat(response.getUpdatedAt()).isInstanceOf(LocalDateTime.class);
     }
 
     @Test
@@ -130,12 +131,12 @@ class IncomeResourceTest {
             .extract()
             .as(new TypeRef<IncomeDTO>() {});
 
-        assertThat(response.incomeId()).isEqualTo(sampleIncome.getIncomeId());
-        assertThat(response.incomeDescription()).isEqualTo(sampleIncome.getIncomeDescription());
-        assertThat(response.amount()).isEqualTo(sampleIncome.getAmount());
-        assertThat(response.account().accountId()).isEqualTo(sampleIncome.getAccount().getAccountId());
-        assertThat(response.createdAt()).isEqualTo(sampleIncome.getCreatedAt());
-        assertThat(response.updatedAt()).isEqualTo(sampleIncome.getUpdatedAt());
+        assertThat(response.getIncomeId()).isEqualTo(sampleIncome.getIncomeId());
+        assertThat(response.getIncomeDescription()).isEqualTo(sampleIncome.getIncomeDescription());
+        assertThat(response.getAmount()).isEqualTo(sampleIncome.getAmount());
+        assertThat(response.getAccount().getAccountId()).isEqualTo(sampleIncome.getAccount().getAccountId());
+        assertThat(response.getCreatedAt()).isEqualTo(sampleIncome.getCreatedAt());
+        assertThat(response.getUpdatedAt()).isEqualTo(sampleIncome.getUpdatedAt());
     }
 
     @Test
@@ -152,12 +153,12 @@ class IncomeResourceTest {
             .as(new TypeRef<List<IncomeDTO>>() {});
 
         assertThat(response).hasSize(1);
-        assertThat(response.getFirst().incomeId()).isEqualTo(sampleIncome.getIncomeId());
-        assertThat(response.getFirst().incomeDescription()).isEqualTo(sampleIncome.getIncomeDescription());
-        assertThat(response.getFirst().amount()).isEqualTo(sampleIncome.getAmount());
-        assertThat(response.getFirst().account().accountId()).isEqualTo(sampleIncome.getAccount().getAccountId());
-        assertThat(response.getFirst().createdAt()).isEqualTo(sampleIncome.getCreatedAt());
-        assertThat(response.getFirst().updatedAt()).isEqualTo(sampleIncome.getUpdatedAt());
+        assertThat(response.getFirst().getIncomeId()).isEqualTo(sampleIncome.getIncomeId());
+        assertThat(response.getFirst().getIncomeDescription()).isEqualTo(sampleIncome.getIncomeDescription());
+        assertThat(response.getFirst().getAmount()).isEqualTo(sampleIncome.getAmount());
+        assertThat(response.getFirst().getAccount().getAccountId()).isEqualTo(sampleIncome.getAccount().getAccountId());
+        assertThat(response.getFirst().getCreatedAt()).isEqualTo(sampleIncome.getCreatedAt());
+        assertThat(response.getFirst().getUpdatedAt()).isEqualTo(sampleIncome.getUpdatedAt());
     }
 
     @Test

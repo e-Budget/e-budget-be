@@ -1,6 +1,7 @@
 package com.ebudget.category.resource;
 
 import com.ebudget.category.resource.request.NewCategoryDTO;
+import com.ebudget.category.resource.request.UpdateCategoryDTO;
 import com.ebudget.category.resource.response.CategoryDTO;
 import com.ebudget.category.service.interfaces.ICategoryService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -37,7 +38,7 @@ public class CategoryResource {
 
     @PUT
     @Path("{categoryId}")
-    public RestResponse<Void> updateCategory(@PathParam("categoryId") UUID categoryId, NewCategoryDTO updateCategoryDTO) {
+    public RestResponse<Void> updateCategory(@PathParam("categoryId") UUID categoryId, UpdateCategoryDTO updateCategoryDTO) {
         categoryService.updateCategory(categoryId, updateCategoryDTO);
 
         return RestResponse.status(RestResponse.Status.NO_CONTENT);

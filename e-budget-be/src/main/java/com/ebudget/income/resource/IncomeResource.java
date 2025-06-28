@@ -1,6 +1,7 @@
 package com.ebudget.income.resource;
 
 import com.ebudget.income.resource.request.NewIncomeDTO;
+import com.ebudget.income.resource.request.UpdateIncomeDTO;
 import com.ebudget.income.resource.response.IncomeDTO;
 import com.ebudget.income.service.interfaces.IIncomeService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -37,7 +38,7 @@ public class IncomeResource {
 
     @PUT
     @Path("{incomeId}")
-    public RestResponse<Void> updateIncome(@PathParam("incomeId") UUID incomeId, @Valid NewIncomeDTO updateIncomeDTO) {
+    public RestResponse<Void> updateIncome(@PathParam("incomeId") UUID incomeId, @Valid UpdateIncomeDTO updateIncomeDTO) {
         incomeService.updateIncome(incomeId, updateIncomeDTO);
 
         return RestResponse.status(RestResponse.Status.NO_CONTENT);

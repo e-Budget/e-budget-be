@@ -2,7 +2,6 @@ package com.ebudget.transfer.service;
 
 import com.ebudget.account.model.Account;
 import com.ebudget.account.repository.AccountRepository;
-import com.ebudget.account.resource.response.AccountDTO;
 import com.ebudget.core.exceptions.EntityNotFoundException;
 import com.ebudget.transfer.exception.RecipientAccountNotFoundException;
 import com.ebudget.transfer.exception.SenderAccountNotFoundException;
@@ -56,33 +55,7 @@ public class TransferService implements ITransferService {
 
         transferRepository.persistAndFlush(transfer);
 
-        return new TransferDTO(
-                transfer.getTransferId(),
-                transfer.getTransferDescription(),
-                transfer.getAmount(),
-                new AccountDTO(
-                        senderBankAccount.getAccountId(),
-                        senderBankAccount.getAccountLogo(),
-                        senderBankAccount.getAccountName(),
-                        senderBankAccount.getAccountType(),
-                        senderBankAccount.getInitialBalance(),
-                        senderBankAccount.getBalance(),
-                        senderBankAccount.getCreatedAt(),
-                        senderBankAccount.getUpdatedAt()
-                ),
-                new AccountDTO(
-                        recipientBankAccount.getAccountId(),
-                        recipientBankAccount.getAccountLogo(),
-                        recipientBankAccount.getAccountName(),
-                        recipientBankAccount.getAccountType(),
-                        recipientBankAccount.getInitialBalance(),
-                        recipientBankAccount.getBalance(),
-                        recipientBankAccount.getCreatedAt(),
-                        recipientBankAccount.getUpdatedAt()
-                ),
-                transfer.getCreatedAt(),
-                transfer.getUpdatedAt()
-        );
+        return new TransferDTO(transfer);
     }
 
     @Override
@@ -107,33 +80,7 @@ public class TransferService implements ITransferService {
             throw new EntityNotFoundException(Transfer.class, transferId);
         }
 
-        return new TransferDTO(
-                transfer.getTransferId(),
-                transfer.getTransferDescription(),
-                transfer.getAmount(),
-                new AccountDTO(
-                        transfer.getFromAccount().getAccountId(),
-                        transfer.getFromAccount().getAccountLogo(),
-                        transfer.getFromAccount().getAccountName(),
-                        transfer.getFromAccount().getAccountType(),
-                        transfer.getFromAccount().getInitialBalance(),
-                        transfer.getFromAccount().getBalance(),
-                        transfer.getFromAccount().getCreatedAt(),
-                        transfer.getFromAccount().getUpdatedAt()
-                ),
-                new AccountDTO(
-                        transfer.getToAccount().getAccountId(),
-                        transfer.getToAccount().getAccountLogo(),
-                        transfer.getToAccount().getAccountName(),
-                        transfer.getToAccount().getAccountType(),
-                        transfer.getToAccount().getInitialBalance(),
-                        transfer.getToAccount().getBalance(),
-                        transfer.getToAccount().getCreatedAt(),
-                        transfer.getToAccount().getUpdatedAt()
-                ),
-                transfer.getCreatedAt(),
-                transfer.getUpdatedAt()
-        );
+        return new TransferDTO(transfer);
     }
 
     @Override
@@ -141,38 +88,12 @@ public class TransferService implements ITransferService {
         List<Transfer> transfers = transferRepository.listAll();
 
         return transfers.stream()
-                .map(transfer -> new TransferDTO(
-                        transfer.getTransferId(),
-                        transfer.getTransferDescription(),
-                        transfer.getAmount(),
-                        new AccountDTO(
-                                transfer.getFromAccount().getAccountId(),
-                                transfer.getFromAccount().getAccountLogo(),
-                                transfer.getFromAccount().getAccountName(),
-                                transfer.getFromAccount().getAccountType(),
-                                transfer.getFromAccount().getInitialBalance(),
-                                transfer.getFromAccount().getBalance(),
-                                transfer.getFromAccount().getCreatedAt(),
-                                transfer.getFromAccount().getUpdatedAt()
-                        ),
-                        new AccountDTO(
-                                transfer.getToAccount().getAccountId(),
-                                transfer.getToAccount().getAccountLogo(),
-                                transfer.getToAccount().getAccountName(),
-                                transfer.getToAccount().getAccountType(),
-                                transfer.getToAccount().getInitialBalance(),
-                                transfer.getToAccount().getBalance(),
-                                transfer.getToAccount().getCreatedAt(),
-                                transfer.getToAccount().getUpdatedAt()
-                        ),
-                        transfer.getCreatedAt(),
-                        transfer.getUpdatedAt()
-                ))
+                .map(TransferDTO::new)
                 .toList();
     }
 
     private void processTransfer(Account senderBankAccount, Account recipientBankAccount, BigDecimal amount) {
-        senderBankAccount.updateBalance(amount.negate());
-        recipientBankAccount.updateBalance(amount);
+        senderBankAccount.withdraw(amount);
+        recipientBankAccount.deposit(amount);
     }
 }

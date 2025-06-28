@@ -1,6 +1,7 @@
 package com.ebudget.core.config;
 
 import com.ebudget.account.model.Account;
+import com.ebudget.account.model.enums.AccountLogo;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.resource.request.NewAccountDTO;
 import com.ebudget.core.exceptions.EntityNotFoundException;
@@ -49,9 +50,9 @@ class EBudgetExceptionMapperTest {
 
         // then
         assertThat(restResponse.getStatus()).isEqualTo(RestResponse.Status.NOT_FOUND.getStatusCode());
-        assertThat(restResponse.getEntity().exception()).isEqualTo(EntityNotFoundException.class.getSimpleName());
-        assertThat(restResponse.getEntity().message()).isEqualTo("Account not found");
-        assertThat(restResponse.getEntity().details()).isEqualTo(expectedExceptionDetails);
+        assertThat(restResponse.getEntity().getException()).isEqualTo(EntityNotFoundException.class.getSimpleName());
+        assertThat(restResponse.getEntity().getMessage()).isEqualTo("Account not found");
+        assertThat(restResponse.getEntity().getDetails()).isEqualTo(expectedExceptionDetails);
     }
 
     @Test
@@ -64,7 +65,7 @@ class EBudgetExceptionMapperTest {
         ));
 
         Set<ConstraintViolation<NewAccountDTO>> violations = validator.validate(new NewAccountDTO(
-                "accountLogo",
+                AccountLogo.NONE,
                 null,
                 AccountType.BANK_ACCOUNT,
                 new BigDecimal("0.00")
@@ -77,8 +78,8 @@ class EBudgetExceptionMapperTest {
 
         // then
         assertThat(restResponse.getStatus()).isEqualTo(RestResponse.Status.BAD_REQUEST.getStatusCode());
-        assertThat(restResponse.getEntity().exception()).isEqualTo(ValidationException.class.getSimpleName());
-        assertThat(restResponse.getEntity().message()).isEqualTo("Request contains validation errors");
-        assertThat(restResponse.getEntity().details()).isEqualTo(expectedExceptionDetails);
+        assertThat(restResponse.getEntity().getException()).isEqualTo(ValidationException.class.getSimpleName());
+        assertThat(restResponse.getEntity().getMessage()).isEqualTo("Request contains validation errors");
+        assertThat(restResponse.getEntity().getDetails()).isEqualTo(expectedExceptionDetails);
     }
 }
