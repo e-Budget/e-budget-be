@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -151,6 +152,82 @@ class ExpenseServiceTest {
     }
 
     @Test
+    @DisplayName("Should add an expense when category is null")
+    void shouldAddExpenseWhenCategoryIsNull() {
+        // given
+        BigDecimal accountBalance = sampleAccount.getBalance();
+
+        NewExpenseDTO newExpenseDTO = new NewExpenseDTO(
+                "expenseDescription",
+                6,
+                2025,
+                new BigDecimal("10.00"),
+                null,
+                sampleAccount.getAccountId(),
+                LocalDate.of(2025, 6, 27)
+        );
+
+        when(categoryRepository.findById(any(UUID.class))).thenReturn(null);
+        when(accountRepository.findById(any(UUID.class))).thenReturn(sampleAccount);
+        doNothing().when(expenseRepository).persistAndFlush(any(Expense.class));
+
+        // when
+        ExpenseDTO expense = expenseService.addExpense(newExpenseDTO);
+
+        // then
+        assertThat(expense.getExpenseDescription()).isEqualTo(newExpenseDTO.expenseDescription());
+        assertThat(expense.getExpenseMonth()).isEqualTo(newExpenseDTO.expenseMonth());
+        assertThat(expense.getExpenseYear()).isEqualTo(newExpenseDTO.expenseYear());
+        assertThat(expense.getAmount()).isEqualTo(newExpenseDTO.amount());
+        assertThat(expense.getCategory()).isNull();
+        assertThat(expense.getAccount().accountId()).isEqualTo(newExpenseDTO.accountId());
+        assertThat(expense.getAccount().balance()).isEqualTo(accountBalance.subtract(newExpenseDTO.amount()));
+
+        verify(categoryRepository, times(1)).findById(null);
+        verify(accountRepository, times(1)).findById(any(UUID.class));
+        verify(expenseRepository, times(1)).persistAndFlush(any(Expense.class));
+    }
+
+    @Test
+    @DisplayName("Should add an expense when category has no budget associated")
+    void shouldAddExpenseWhenCategoryHasNoBudgetAssociated() {
+        // given
+        BigDecimal accountBalance = sampleAccount.getBalance();
+
+        NewExpenseDTO newExpenseDTO = new NewExpenseDTO(
+                "expenseDescription",
+                6,
+                2025,
+                new BigDecimal("10.00"),
+                sampleCategory.getCategoryId(),
+                sampleAccount.getAccountId(),
+                LocalDate.of(2025, 6, 27)
+        );
+
+        when(categoryRepository.findById(any(UUID.class))).thenReturn(sampleCategory);
+        when(budgetRepository.findByCategoryMonthYear(any(Category.class), anyInt(), anyInt())).thenReturn(null);
+        when(accountRepository.findById(any(UUID.class))).thenReturn(sampleAccount);
+        doNothing().when(expenseRepository).persistAndFlush(any(Expense.class));
+
+        // when
+        ExpenseDTO expense = expenseService.addExpense(newExpenseDTO);
+
+        // then
+        assertThat(expense.getExpenseDescription()).isEqualTo(newExpenseDTO.expenseDescription());
+        assertThat(expense.getExpenseMonth()).isEqualTo(newExpenseDTO.expenseMonth());
+        assertThat(expense.getExpenseYear()).isEqualTo(newExpenseDTO.expenseYear());
+        assertThat(expense.getAmount()).isEqualTo(newExpenseDTO.amount());
+        assertThat(expense.getCategory().categoryId()).isEqualTo(newExpenseDTO.categoryId());
+        assertThat(expense.getAccount().accountId()).isEqualTo(newExpenseDTO.accountId());
+        assertThat(expense.getAccount().balance()).isEqualTo(accountBalance.subtract(newExpenseDTO.amount()));
+
+        verify(categoryRepository, times(1)).findById(any(UUID.class));
+        verify(budgetRepository, times(1)).findByCategoryMonthYear(any(Category.class), anyInt(), anyInt());
+        verify(accountRepository, times(1)).findById(any(UUID.class));
+        verify(expenseRepository, times(1)).persistAndFlush(any(Expense.class));
+    }
+
+    @Test
     @DisplayName("Should throw exception on add expense with a non-existing account")
     void shouldThrowExceptionOnAddExpenseNonExistingAccount() {
         // given
@@ -178,6 +255,9 @@ class ExpenseServiceTest {
     @DisplayName("Should update an expense")
     void shouldUpdateExpense() {
         // given
+        BigDecimal accountBalance = sampleExpense.getAccount().getBalance();
+        BigDecimal expenseAmount = sampleExpense.getAmount();
+
         UpdateExpenseDTO updateExpenseDTO = new UpdateExpenseDTO(
                 "newExpenseDescription",
                 6,
@@ -205,6 +285,7 @@ class ExpenseServiceTest {
         assertThat(sampleExpense.getCategory().getCategoryId()).isEqualTo(updateExpenseDTO.categoryId());
         assertThat(sampleExpense.getAccount().getAccountId()).isEqualTo(updateExpenseDTO.accountId());
         assertThat(sampleExpense.getDate()).isEqualTo(updateExpenseDTO.date());
+        assertThat(sampleExpense.getAccount().getBalance()).isEqualTo(accountBalance.add(expenseAmount.subtract(updateExpenseDTO.amount())));
 
         verify(expenseRepository, times(1)).findById(sampleExpenseId);
         verify(budgetRepository, times(2)).findByCategoryMonthYear(sampleExpense.getCategory(), sampleExpense.getDate().getMonthValue(), sampleExpense.getDate().getYear());
@@ -236,7 +317,88 @@ class ExpenseServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception on update an expense when  non-existing new account")
+    @DisplayName("Should update an expense when current category has no budget associated")
+    void shouldUpdateExpenseWhenCurrentCategoryHasNoBudgetAssociated() {
+        // given
+        BigDecimal accountBalance = sampleExpense.getAccount().getBalance();
+        BigDecimal expenseAmount = sampleExpense.getAmount();
+
+        UpdateExpenseDTO updateExpenseDTO = new UpdateExpenseDTO(
+                "newExpenseDescription",
+                6,
+                2025,
+                new BigDecimal("5.00"),
+                sampleCategory.getCategoryId(),
+                sampleAccount.getAccountId(),
+                LocalDate.of(2025, 6, 28)
+        );
+
+        when(expenseRepository.findById(sampleExpenseId)).thenReturn(sampleExpense);
+        when(budgetRepository.findByCategoryMonthYear(sampleExpense.getCategory(), sampleExpense.getDate().getMonthValue(), sampleExpense.getDate().getYear())).thenReturn(null);
+        when(categoryRepository.findById(updateExpenseDTO.categoryId())).thenReturn(sampleCategory);
+        when(accountRepository.findById(updateExpenseDTO.accountId())).thenReturn(sampleAccount);
+
+        // when
+        expenseService.updateExpense(sampleExpenseId, updateExpenseDTO);
+
+        // then
+        assertThat(sampleExpense.getExpenseId()).isEqualTo(sampleExpenseId);
+        assertThat(sampleExpense.getExpenseDescription()).isEqualTo(updateExpenseDTO.expenseDescription());
+        assertThat(sampleExpense.getExpenseMonth()).isEqualTo(updateExpenseDTO.expenseMonth());
+        assertThat(sampleExpense.getExpenseYear()).isEqualTo(updateExpenseDTO.expenseYear());
+        assertThat(sampleExpense.getAmount()).isEqualTo(updateExpenseDTO.amount());
+        assertThat(sampleExpense.getCategory().getCategoryId()).isEqualTo(updateExpenseDTO.categoryId());
+        assertThat(sampleExpense.getAccount().getAccountId()).isEqualTo(updateExpenseDTO.accountId());
+        assertThat(sampleExpense.getDate()).isEqualTo(updateExpenseDTO.date());
+        assertThat(sampleExpense.getAccount().getBalance()).isEqualTo(accountBalance.add(expenseAmount.subtract(updateExpenseDTO.amount())));
+
+        verify(expenseRepository, times(1)).findById(sampleExpenseId);
+        verify(budgetRepository, times(2)).findByCategoryMonthYear(sampleExpense.getCategory(), sampleExpense.getDate().getMonthValue(), sampleExpense.getDate().getYear());
+        verify(accountRepository, times(1)).findById(updateExpenseDTO.accountId());
+    }
+
+    @Test
+    @DisplayName("Should update an expense when new category is null")
+    void shouldUpdateExpenseWhenNewCategoryIsNull() {
+        // given
+        BigDecimal accountBalance = sampleExpense.getAccount().getBalance();
+        BigDecimal expenseAmount = sampleExpense.getAmount();
+
+        UpdateExpenseDTO updateExpenseDTO = new UpdateExpenseDTO(
+                "newExpenseDescription",
+                6,
+                2025,
+                new BigDecimal("5.00"),
+                null,
+                sampleAccount.getAccountId(),
+                LocalDate.of(2025, 6, 28)
+        );
+
+        when(expenseRepository.findById(sampleExpenseId)).thenReturn(sampleExpense);
+        when(categoryRepository.findById(updateExpenseDTO.categoryId())).thenReturn(null);
+        when(accountRepository.findById(updateExpenseDTO.accountId())).thenReturn(sampleAccount);
+
+        // when
+        expenseService.updateExpense(sampleExpenseId, updateExpenseDTO);
+
+        // then
+        assertThat(sampleExpense.getExpenseId()).isEqualTo(sampleExpenseId);
+        assertThat(sampleExpense.getExpenseDescription()).isEqualTo(updateExpenseDTO.expenseDescription());
+        assertThat(sampleExpense.getExpenseMonth()).isEqualTo(updateExpenseDTO.expenseMonth());
+        assertThat(sampleExpense.getExpenseYear()).isEqualTo(updateExpenseDTO.expenseYear());
+        assertThat(sampleExpense.getAmount()).isEqualTo(updateExpenseDTO.amount());
+        assertThat(sampleExpense.getCategory()).isNull();
+        assertThat(sampleExpense.getAccount().getAccountId()).isEqualTo(updateExpenseDTO.accountId());
+        assertThat(sampleExpense.getDate()).isEqualTo(updateExpenseDTO.date());
+        assertThat(sampleExpense.getAccount().getBalance()).isEqualTo(accountBalance.add(expenseAmount.subtract(updateExpenseDTO.amount())));
+
+        verify(expenseRepository, times(1)).findById(sampleExpenseId);
+        verify(categoryRepository, times(1)).findById(isNull());
+        verify(accountRepository, times(1)).findById(updateExpenseDTO.accountId());
+    }
+
+    @Test
+    @DisplayName("Should throw exception on update an expense when non-existing new account")
     void shouldThrowExceptionOnUpdateExpenseWhenNonExistingNewAccount() {
         // given
         UpdateExpenseDTO updateExpenseDTO = new UpdateExpenseDTO(
@@ -366,5 +528,26 @@ class ExpenseServiceTest {
         });
 
         verify(expenseRepository, times(1)).findById(any(UUID.class));
+    }
+
+    @Test
+    @DisplayName("Should delete an expense when budget is null")
+    void shouldDeleteExpenseWhenBudgetIsNull() {
+        // given
+        BigDecimal accountBalance = sampleAccount.getBalance();
+
+        when(expenseRepository.findById(any(UUID.class))).thenReturn(sampleExpense);
+        when(budgetRepository.findByCategoryMonthYear(any(Category.class), anyInt(), anyInt())).thenReturn(null);
+        doNothing().when(expenseRepository).delete(any(Expense.class));
+
+        // when / then
+        assertThatNoException().isThrownBy(() -> {
+            expenseService.deleteExpense(sampleExpenseId);
+        });
+        assertThat(sampleExpense.getAccount().getBalance()).isEqualTo(accountBalance.add(sampleExpense.getAmount()));
+
+        verify(expenseRepository, times(1)).findById(any(UUID.class));
+        verify(budgetRepository, times(1)).findByCategoryMonthYear(any(Category.class), anyInt(), anyInt());
+        verify(expenseRepository, times(1)).delete(any(Expense.class));
     }
 }

@@ -12,7 +12,7 @@ public class EntityNotFoundException extends EBudgetException {
         super(
                 EntityNotFoundException.class,
                 entity.getSimpleName() + " not found",
-                entityId != null ? Map.of(PROPERTY_NAME, entityId) : null,
+                Map.of(PROPERTY_NAME, entityId),
                 RestResponse.Status.NOT_FOUND
         );
     }
