@@ -71,10 +71,6 @@ class BudgetServiceTest {
     @Test
     @DisplayName("Should add a new budget")
     void shoudlAddBudget() {
-        when(categoryRepository.findById(any(UUID.class))).thenReturn(sampleCategory);
-        when(budgetRepository.countByCategoryMonthYear(anyMap())).thenReturn(0L);
-        doNothing().when(budgetRepository).persistAndFlush(any(Budget.class));
-
         // given
         NewBudgetDTO newBudgetDTO = new NewBudgetDTO(
                 6,
@@ -83,14 +79,18 @@ class BudgetServiceTest {
                 new BigDecimal("100.00")
         );
 
+        when(categoryRepository.findById(any(UUID.class))).thenReturn(sampleCategory);
+        when(budgetRepository.countByCategoryMonthYear(anyMap())).thenReturn(0L);
+        doNothing().when(budgetRepository).persistAndFlush(any(Budget.class));
+
         // when
         BudgetDTO budget = budgetService.addBudget(newBudgetDTO);
 
         // then
-        assertThat(budget.budgetMonth()).isEqualTo(newBudgetDTO.budgetMonth());
-        assertThat(budget.budgetYear()).isEqualTo(newBudgetDTO.budgetYear());
-        assertThat(budget.monthlyBudget()).isEqualTo(newBudgetDTO.monthlyBudget());
-        assertThat(budget.category().categoryId()).isEqualTo(sampleCategory.getCategoryId());
+        assertThat(budget.getBudgetMonth()).isEqualTo(newBudgetDTO.budgetMonth());
+        assertThat(budget.getBudgetYear()).isEqualTo(newBudgetDTO.budgetYear());
+        assertThat(budget.getMonthlyBudget()).isEqualTo(newBudgetDTO.monthlyBudget());
+        assertThat(budget.getCategory().getCategoryId()).isEqualTo(sampleCategory.getCategoryId());
 
         verify(categoryRepository, times(1)).findById(any(UUID.class));
         verify(budgetRepository, times(1)).persistAndFlush(any(Budget.class));
@@ -99,8 +99,6 @@ class BudgetServiceTest {
     @Test
     @DisplayName("Should throw exception on add budget with a non-existing category")
     void shouldThrowExceptionOnAddBudgetNonExistingCategory() {
-        when(categoryRepository.findById(any(UUID.class))).thenReturn(null);
-
         // given
         NewBudgetDTO newBudgetDTO = new NewBudgetDTO(
                 6,
@@ -108,6 +106,8 @@ class BudgetServiceTest {
                 UUID.randomUUID(),
                 new BigDecimal("100.00")
         );
+
+        when(categoryRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
         assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
@@ -120,9 +120,6 @@ class BudgetServiceTest {
     @Test
     @DisplayName("Should throw exception on add a non-unique budget")
     void shouldThrowExceptionOnAddNonUniqueBudget() {
-        when(categoryRepository.findById(any(UUID.class))).thenReturn(sampleCategory);
-        when(budgetRepository.countByCategoryMonthYear(anyMap())).thenReturn(1L);
-
         // given
         NewBudgetDTO newBudgetDTO = new NewBudgetDTO(
                 6,
@@ -130,6 +127,9 @@ class BudgetServiceTest {
                 UUID.randomUUID(),
                 new BigDecimal("100.00")
         );
+
+        when(categoryRepository.findById(any(UUID.class))).thenReturn(sampleCategory);
+        when(budgetRepository.countByCategoryMonthYear(anyMap())).thenReturn(1L);
 
         // when / then
         assertThatExceptionOfType(BudgetAlreadyExistsException.class).isThrownBy(() -> {
@@ -143,15 +143,15 @@ class BudgetServiceTest {
     @Test
     @DisplayName("Should update a budget")
     void shouldUpdateBudget() {
-        when(budgetRepository.findById(any(UUID.class))).thenReturn(sampleBudget);
-        when(budgetRepository.countByCategoryMonthYear(anyMap())).thenReturn(0L);
-
         // given
         UpdateBudgetDTO updateBudgetDTO = new UpdateBudgetDTO(
                 7,
                 2025,
                 new BigDecimal("10.00")
         );
+
+        when(budgetRepository.findById(any(UUID.class))).thenReturn(sampleBudget);
+        when(budgetRepository.countByCategoryMonthYear(anyMap())).thenReturn(0L);
 
         // when
         budgetService.updateBudget(sampleBudgetId, updateBudgetDTO);
@@ -171,14 +171,14 @@ class BudgetServiceTest {
     @Test
     @DisplayName("Should throw an exception on update a non-existing budget")
     void shouldThrowExceptionOnUpdateBudgetNonExistingBudget() {
-        when(budgetRepository.findById(any(UUID.class))).thenReturn(null);
-
         // given
         UpdateBudgetDTO updateBudgetDTO = new UpdateBudgetDTO(
                 7,
                 2026,
                 new BigDecimal("10.00")
         );
+
+        when(budgetRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when // then
         assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> {
@@ -191,15 +191,15 @@ class BudgetServiceTest {
     @Test
     @DisplayName("Should throw exception on update a non-unique budget")
     void shouldThrowExceptionOnUpdateNonUniqueBudget() {
-        when(budgetRepository.findById(any(UUID.class))).thenReturn(sampleBudget);
-        when(budgetRepository.countByCategoryMonthYear(anyMap())).thenReturn(1L);
-
         // given
         UpdateBudgetDTO updateBudgetDTO = new UpdateBudgetDTO(
                 6,
                 2026,
                 new BigDecimal("10.00")
         );
+
+        when(budgetRepository.findById(any(UUID.class))).thenReturn(sampleBudget);
+        when(budgetRepository.countByCategoryMonthYear(anyMap())).thenReturn(1L);
 
         // when / then
         assertThatExceptionOfType(BudgetAlreadyExistsException.class).isThrownBy(() -> {
@@ -220,16 +220,16 @@ class BudgetServiceTest {
         BudgetDTO budget = budgetService.getBudget(sampleBudgetId);
 
         // then
-        assertThat(budget.budgetId()).isEqualTo(sampleBudget.getBudgetId());
-        assertThat(budget.budgetMonth()).isEqualTo(sampleBudget.getBudgetMonth());
-        assertThat(budget.budgetYear()).isEqualTo(sampleBudget.getBudgetYear());
-        assertThat(budget.category().categoryId()).isEqualTo(sampleBudget.getCategory().getCategoryId());
-        assertThat(budget.monthlyBudget()).isEqualTo(sampleBudget.getMonthlyBudget());
-        assertThat(budget.monthlyBudgetUsed()).isEqualTo(sampleBudget.getMonthlyBudgetUsed());
-        assertThat(budget.monthlyBudgetUsedPercentage()).isEqualTo(sampleBudget.getMonthlyBudgetUsedPercentage());
-        assertThat(budget.monthlyBudgetBalance()).isEqualTo(sampleBudget.getMonthlyBudgetBalance());
-        assertThat(budget.createdAt()).isEqualTo(sampleBudget.getCreatedAt());
-        assertThat(budget.updatedAt()).isEqualTo(sampleBudget.getUpdatedAt());
+        assertThat(budget.getBudgetId()).isEqualTo(sampleBudget.getBudgetId());
+        assertThat(budget.getBudgetMonth()).isEqualTo(sampleBudget.getBudgetMonth());
+        assertThat(budget.getBudgetYear()).isEqualTo(sampleBudget.getBudgetYear());
+        assertThat(budget.getCategory().getCategoryId()).isEqualTo(sampleBudget.getCategory().getCategoryId());
+        assertThat(budget.getMonthlyBudget()).isEqualTo(sampleBudget.getMonthlyBudget());
+        assertThat(budget.getMonthlyBudgetUsed()).isEqualTo(sampleBudget.getMonthlyBudgetUsed());
+        assertThat(budget.getMonthlyBudgetUsedPercentage()).isEqualTo(sampleBudget.getMonthlyBudgetUsedPercentage());
+        assertThat(budget.getMonthlyBudgetBalance()).isEqualTo(sampleBudget.getMonthlyBudgetBalance());
+        assertThat(budget.getCreatedAt()).isEqualTo(sampleBudget.getCreatedAt());
+        assertThat(budget.getUpdatedAt()).isEqualTo(sampleBudget.getUpdatedAt());
 
         verify(budgetRepository, times(1)).findById(any(UUID.class));
     }

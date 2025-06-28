@@ -1,6 +1,7 @@
 package com.ebudget.transfer.resource;
 
 import com.ebudget.account.model.Account;
+import com.ebudget.account.model.enums.AccountLogo;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.transfer.model.Transfer;
@@ -44,7 +45,7 @@ class TransferResourceTest {
     @Transactional
     void setup() {
         sampleFromAccount = Account.builder()
-                .accountLogo("fromAccountLogo")
+                .accountLogo(AccountLogo.NONE)
                 .accountName("fromAccountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal("100.00"))
@@ -52,7 +53,7 @@ class TransferResourceTest {
                 .build();
 
         sampleToAccount = Account.builder()
-                .accountLogo("toAccountLogo")
+                .accountLogo(AccountLogo.NONE)
                 .accountName("toAccountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal("0.00"))
@@ -99,16 +100,16 @@ class TransferResourceTest {
             .extract()
             .as(new TypeRef<TransferDTO>() {});
 
-        assertThat(response.transferId()).isNotNull();
-        assertThat(response.transferId()).isInstanceOf(UUID.class);
-        assertThat(response.transferDescription()).isEqualTo(newTransferDTO.transferDescription());
-        assertThat(response.amount()).isEqualTo(newTransferDTO.amount());
-        assertThat(response.fromAccount().accountId()).isEqualTo(newTransferDTO.fromAccount());
-        assertThat(response.toAccount().accountId()).isEqualTo(newTransferDTO.toAccount());
-        assertThat(response.createdAt()).isNotNull();
-        assertThat(response.createdAt()).isInstanceOf(LocalDateTime.class);
-        assertThat(response.updatedAt()).isNotNull();
-        assertThat(response.updatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getTransferId()).isNotNull();
+        assertThat(response.getTransferId()).isInstanceOf(UUID.class);
+        assertThat(response.getTransferDescription()).isEqualTo(newTransferDTO.transferDescription());
+        assertThat(response.getAmount()).isEqualTo(newTransferDTO.amount());
+        assertThat(response.getFromAccount().getAccountId()).isEqualTo(newTransferDTO.fromAccount());
+        assertThat(response.getToAccount().getAccountId()).isEqualTo(newTransferDTO.toAccount());
+        assertThat(response.getCreatedAt()).isNotNull();
+        assertThat(response.getCreatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getUpdatedAt()).isNotNull();
+        assertThat(response.getUpdatedAt()).isInstanceOf(LocalDateTime.class);
     }
 
     @Test
@@ -135,13 +136,13 @@ class TransferResourceTest {
             .extract()
             .as(new TypeRef<TransferDTO>() {});
 
-        assertThat(response.transferId()).isEqualTo(sampleTransfer.getTransferId());
-        assertThat(response.transferDescription()).isEqualTo(sampleTransfer.getTransferDescription());
-        assertThat(response.amount()).isEqualTo(sampleTransfer.getAmount());
-        assertThat(response.fromAccount().accountId()).isEqualTo(sampleTransfer.getFromAccount().getAccountId());
-        assertThat(response.toAccount().accountId()).isEqualTo(sampleTransfer.getToAccount().getAccountId());
-        assertThat(response.createdAt()).isEqualTo(sampleTransfer.getCreatedAt());
-        assertThat(response.updatedAt()).isEqualTo(sampleTransfer.getUpdatedAt());
+        assertThat(response.getTransferId()).isEqualTo(sampleTransfer.getTransferId());
+        assertThat(response.getTransferDescription()).isEqualTo(sampleTransfer.getTransferDescription());
+        assertThat(response.getAmount()).isEqualTo(sampleTransfer.getAmount());
+        assertThat(response.getFromAccount().getAccountId()).isEqualTo(sampleTransfer.getFromAccount().getAccountId());
+        assertThat(response.getToAccount().getAccountId()).isEqualTo(sampleTransfer.getToAccount().getAccountId());
+        assertThat(response.getCreatedAt()).isEqualTo(sampleTransfer.getCreatedAt());
+        assertThat(response.getUpdatedAt()).isEqualTo(sampleTransfer.getUpdatedAt());
     }
 
     @Test
@@ -158,12 +159,12 @@ class TransferResourceTest {
             .as(new TypeRef<List<TransferDTO>>() {});
 
         assertThat(response).hasSize(1);
-        assertThat(response.getFirst().transferId()).isEqualTo(sampleTransfer.getTransferId());
-        assertThat(response.getFirst().transferDescription()).isEqualTo(sampleTransfer.getTransferDescription());
-        assertThat(response.getFirst().amount()).isEqualTo(sampleTransfer.getAmount());
-        assertThat(response.getFirst().fromAccount().accountId()).isEqualTo(sampleTransfer.getFromAccount().getAccountId());
-        assertThat(response.getFirst().toAccount().accountId()).isEqualTo(sampleTransfer.getToAccount().getAccountId());
-        assertThat(response.getFirst().createdAt()).isEqualTo(sampleTransfer.getCreatedAt());
-        assertThat(response.getFirst().updatedAt()).isEqualTo(sampleTransfer.getUpdatedAt());
+        assertThat(response.getFirst().getTransferId()).isEqualTo(sampleTransfer.getTransferId());
+        assertThat(response.getFirst().getTransferDescription()).isEqualTo(sampleTransfer.getTransferDescription());
+        assertThat(response.getFirst().getAmount()).isEqualTo(sampleTransfer.getAmount());
+        assertThat(response.getFirst().getFromAccount().getAccountId()).isEqualTo(sampleTransfer.getFromAccount().getAccountId());
+        assertThat(response.getFirst().getToAccount().getAccountId()).isEqualTo(sampleTransfer.getToAccount().getAccountId());
+        assertThat(response.getFirst().getCreatedAt()).isEqualTo(sampleTransfer.getCreatedAt());
+        assertThat(response.getFirst().getUpdatedAt()).isEqualTo(sampleTransfer.getUpdatedAt());
     }
 }

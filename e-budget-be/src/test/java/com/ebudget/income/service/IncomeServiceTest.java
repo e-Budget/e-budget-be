@@ -1,12 +1,14 @@
 package com.ebudget.income.service;
 
 import com.ebudget.account.model.Account;
+import com.ebudget.account.model.enums.AccountLogo;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.core.exceptions.EntityNotFoundException;
 import com.ebudget.income.model.Income;
 import com.ebudget.income.repository.IncomeRepository;
 import com.ebudget.income.resource.request.NewIncomeDTO;
+import com.ebudget.income.resource.request.UpdateIncomeDTO;
 import com.ebudget.income.resource.response.IncomeDTO;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -47,11 +49,11 @@ class IncomeServiceTest {
     void setup() {
         sampleAccount = Account.builder()
                 .accountId(UUID.randomUUID())
-                .accountLogo("accountLogo")
+                .accountLogo(AccountLogo.NONE)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal(0))
-                .balance(new BigDecimal(0))
+                .balance(new BigDecimal(100))
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -71,8 +73,7 @@ class IncomeServiceTest {
     @DisplayName("Should add an income")
     void shouldAddIncome() {
         // given
-        when(accountRepository.findById(any(UUID.class))).thenReturn(sampleAccount);
-        doNothing().when(incomeRepository).persistAndFlush(any(Income.class));
+        BigDecimal accountBalance = sampleAccount.getBalance();
 
         NewIncomeDTO newIncomeDTO = new NewIncomeDTO(
                 "incomeDescription",
@@ -80,13 +81,17 @@ class IncomeServiceTest {
                 sampleAccount.getAccountId()
         );
 
+        when(accountRepository.findById(any(UUID.class))).thenReturn(sampleAccount);
+        doNothing().when(incomeRepository).persistAndFlush(any(Income.class));
+
         // when
         IncomeDTO income = incomeService.addIncome(newIncomeDTO);
 
         // then
-        assertThat(income.incomeDescription()).isEqualTo(newIncomeDTO.incomeDescription());
-        assertThat(income.amount()).isEqualTo(newIncomeDTO.amount());
-        assertThat(income.account().accountId()).isEqualTo(newIncomeDTO.accountId());
+        assertThat(income.getIncomeDescription()).isEqualTo(newIncomeDTO.incomeDescription());
+        assertThat(income.getAmount()).isEqualTo(newIncomeDTO.amount());
+        assertThat(income.getAccount().getAccountId()).isEqualTo(newIncomeDTO.accountId());
+        assertThat(income.getAccount().getBalance()).isEqualTo(accountBalance.add(newIncomeDTO.amount()));
 
         verify(accountRepository, times(1)).findById(any(UUID.class));
         verify(incomeRepository, times(1)).persistAndFlush(any(Income.class));
@@ -96,13 +101,13 @@ class IncomeServiceTest {
     @DisplayName("Should throw exception on add an income when account does not exist")
     void shouldThrowExceptionOnAddIncomeWhenAccountDoesNotExist() {
         // given
-        when(accountRepository.findById(any(UUID.class))).thenReturn(null);
-
         NewIncomeDTO newIncomeDTO = new NewIncomeDTO(
                 "incomeDescription",
                 new BigDecimal("10.00"),
                 sampleAccount.getAccountId()
         );
+
+        when(accountRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
         assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> incomeService.addIncome(newIncomeDTO));
@@ -114,13 +119,16 @@ class IncomeServiceTest {
     @DisplayName("Should update an income when same account")
     void shouldUpdateIncomeWhenSameAccount() {
         // given
-        when(incomeRepository.findById(any(UUID.class))).thenReturn(sampleIncome);
+        BigDecimal accountBalance = sampleAccount.getBalance();
+        BigDecimal incomeAmount = sampleIncome.getAmount();
 
-        NewIncomeDTO updateIncomeDTO = new NewIncomeDTO(
+        UpdateIncomeDTO updateIncomeDTO = new UpdateIncomeDTO(
                 "newIncomeDescription",
                 new BigDecimal("150.00"),
                 sampleAccount.getAccountId()
         );
+
+        when(incomeRepository.findById(any(UUID.class))).thenReturn(sampleIncome);
 
         // when
         incomeService.updateIncome(sampleIncomeId, updateIncomeDTO);
@@ -130,6 +138,7 @@ class IncomeServiceTest {
         assertThat(sampleIncome.getIncomeDescription()).isEqualTo(updateIncomeDTO.incomeDescription());
         assertThat(sampleIncome.getAmount()).isEqualTo(updateIncomeDTO.amount());
         assertThat(sampleIncome.getAccount().getAccountId()).isEqualTo(updateIncomeDTO.accountId());
+        assertThat(sampleIncome.getAccount().getBalance()).isEqualTo(accountBalance.add(updateIncomeDTO.amount().subtract(incomeAmount)));
 
         verify(incomeRepository, times(1)).findById(any(UUID.class));
     }
@@ -138,9 +147,12 @@ class IncomeServiceTest {
     @DisplayName("Should update an income when different account")
     void shouldUpdateIncomeWhenDifferentAccount() {
         // given
+        BigDecimal oldAccountBalance = sampleAccount.getBalance();
+        BigDecimal incomeAmount = sampleIncome.getAmount();
+
         Account account = Account.builder()
                 .accountId(UUID.randomUUID())
-                .accountLogo("accountLogo")
+                .accountLogo(AccountLogo.NONE)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal(0))
@@ -149,14 +161,16 @@ class IncomeServiceTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        when(incomeRepository.findById(any(UUID.class))).thenReturn(sampleIncome);
-        when(accountRepository.findById(any(UUID.class))).thenReturn(account);
+        BigDecimal newAccountBalance = account.getBalance();
 
-        NewIncomeDTO updateIncomeDTO = new NewIncomeDTO(
+        UpdateIncomeDTO updateIncomeDTO = new UpdateIncomeDTO(
                 "newIncomeDescription",
                 new BigDecimal("150.00"),
                 account.getAccountId()
         );
+
+        when(incomeRepository.findById(any(UUID.class))).thenReturn(sampleIncome);
+        when(accountRepository.findById(any(UUID.class))).thenReturn(account);
 
         // when
         incomeService.updateIncome(sampleIncomeId, updateIncomeDTO);
@@ -166,6 +180,8 @@ class IncomeServiceTest {
         assertThat(sampleIncome.getIncomeDescription()).isEqualTo(updateIncomeDTO.incomeDescription());
         assertThat(sampleIncome.getAmount()).isEqualTo(updateIncomeDTO.amount());
         assertThat(sampleIncome.getAccount().getAccountId()).isEqualTo(updateIncomeDTO.accountId());
+        assertThat(sampleAccount.getBalance()).isEqualTo(oldAccountBalance.subtract(incomeAmount));
+        assertThat(sampleIncome.getAccount().getBalance()).isEqualTo(newAccountBalance.add(updateIncomeDTO.amount()));
 
         verify(incomeRepository, times(1)).findById(any(UUID.class));
         verify(accountRepository, times(1)).findById(any(UUID.class));
@@ -175,13 +191,13 @@ class IncomeServiceTest {
     @DisplayName("Should throw exception on update a non-existing income")
     void shouldThrowExceptionOnUpdateNonExistingIncome() {
         // given
-        when(incomeRepository.findById(any(UUID.class))).thenReturn(null);
-
-        NewIncomeDTO updateIncomeDTO = new NewIncomeDTO(
+        UpdateIncomeDTO updateIncomeDTO = new UpdateIncomeDTO(
                 "newIncomeDescription",
                 new BigDecimal("150.00"),
                 sampleIncomeId
         );
+
+        when(incomeRepository.findById(any(UUID.class))).thenReturn(null);
 
         // when / then
         assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> incomeService.updateIncome(sampleIncomeId, updateIncomeDTO));
@@ -199,12 +215,12 @@ class IncomeServiceTest {
         IncomeDTO income = incomeService.getIncome(sampleIncomeId);
 
         // then
-        assertThat(income.incomeId()).isEqualTo(sampleIncome.getIncomeId());
-        assertThat(income.incomeDescription()).isEqualTo(sampleIncome.getIncomeDescription());
-        assertThat(income.amount()).isEqualTo(sampleIncome.getAmount());
-        assertThat(income.account().accountId()).isEqualTo(sampleIncome.getAccount().getAccountId());
-        assertThat(income.createdAt()).isEqualTo(sampleIncome.getCreatedAt());
-        assertThat(income.updatedAt()).isEqualTo(sampleIncome.getUpdatedAt());
+        assertThat(income.getIncomeId()).isEqualTo(sampleIncome.getIncomeId());
+        assertThat(income.getIncomeDescription()).isEqualTo(sampleIncome.getIncomeDescription());
+        assertThat(income.getAmount()).isEqualTo(sampleIncome.getAmount());
+        assertThat(income.getAccount().getAccountId()).isEqualTo(sampleIncome.getAccount().getAccountId());
+        assertThat(income.getCreatedAt()).isEqualTo(sampleIncome.getCreatedAt());
+        assertThat(income.getUpdatedAt()).isEqualTo(sampleIncome.getUpdatedAt());
 
         verify(incomeRepository, times(1)).findById(any(UUID.class));
     }
@@ -229,12 +245,12 @@ class IncomeServiceTest {
         List<IncomeDTO> incomes = incomeService.getIncomes();
 
         // then
-        assertThat(incomes.getFirst().incomeId()).isEqualTo(sampleIncome.getIncomeId());
-        assertThat(incomes.getFirst().incomeDescription()).isEqualTo(sampleIncome.getIncomeDescription());
-        assertThat(incomes.getFirst().amount()).isEqualTo(sampleIncome.getAmount());
-        assertThat(incomes.getFirst().account().accountId()).isEqualTo(sampleIncome.getAccount().getAccountId());
-        assertThat(incomes.getFirst().createdAt()).isEqualTo(sampleIncome.getCreatedAt());
-        assertThat(incomes.getFirst().updatedAt()).isEqualTo(sampleIncome.getUpdatedAt());
+        assertThat(incomes.getFirst().getIncomeId()).isEqualTo(sampleIncome.getIncomeId());
+        assertThat(incomes.getFirst().getIncomeDescription()).isEqualTo(sampleIncome.getIncomeDescription());
+        assertThat(incomes.getFirst().getAmount()).isEqualTo(sampleIncome.getAmount());
+        assertThat(incomes.getFirst().getAccount().getAccountId()).isEqualTo(sampleIncome.getAccount().getAccountId());
+        assertThat(incomes.getFirst().getCreatedAt()).isEqualTo(sampleIncome.getCreatedAt());
+        assertThat(incomes.getFirst().getUpdatedAt()).isEqualTo(sampleIncome.getUpdatedAt());
 
         verify(incomeRepository, times(1)).listAll();
     }
@@ -243,11 +259,15 @@ class IncomeServiceTest {
     @DisplayName("Should delete an income")
     void shouldDeleteIncome() {
         // given
+        BigDecimal accountBalance = sampleAccount.getBalance();
+        BigDecimal incomeAmount = sampleIncome.getAmount();
+
         when(incomeRepository.findById(any(UUID.class))).thenReturn(sampleIncome);
         doNothing().when(incomeRepository).delete(any(Income.class));
 
         // when / then
         assertThatNoException().isThrownBy(() -> incomeService.deleteIncome(sampleIncomeId));
+        assertThat(sampleIncome.getAccount().getBalance()).isEqualTo(accountBalance.subtract(incomeAmount));
 
         verify(incomeRepository, times(1)).findById(any(UUID.class));
         verify(incomeRepository, times(1)).delete(any(Income.class));

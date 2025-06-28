@@ -1,5 +1,6 @@
 package com.ebudget.account.model;
 
+import com.ebudget.account.model.enums.AccountLogo;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.resource.request.UpdateAccountDTO;
 import jakarta.persistence.Column;
@@ -33,8 +34,9 @@ public class Account {
     @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID accountId;
+    @Enumerated(EnumType.STRING)
     @Column(name = "account_logo")
-    private String accountLogo;
+    private AccountLogo accountLogo;
     @Column(name = "account_name")
     private String accountName;
     @Enumerated(EnumType.STRING)
@@ -54,10 +56,6 @@ public class Account {
         setAccountLogo(updateAccountDTO.accountLogo());
         setAccountName(updateAccountDTO.accountName());
         setAccountType(updateAccountDTO.accountType());
-    }
-
-    public void updateBalance(BigDecimal amount) {
-        setBalance(getBalance().add(amount));
     }
 
     public void withdraw(BigDecimal amount) {

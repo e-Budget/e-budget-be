@@ -1,6 +1,7 @@
 package com.ebudget.expense.service;
 
 import com.ebudget.account.model.Account;
+import com.ebudget.account.model.enums.AccountLogo;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.budget.model.Budget;
@@ -62,7 +63,7 @@ class ExpenseServiceTest {
     void setup() {
         sampleAccount = Account.builder()
                 .accountId(UUID.randomUUID())
-                .accountLogo("accountLogo")
+                .accountLogo(AccountLogo.NONE)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal("100.00"))
@@ -138,9 +139,9 @@ class ExpenseServiceTest {
         assertThat(expense.getExpenseMonth()).isEqualTo(newExpenseDTO.expenseMonth());
         assertThat(expense.getExpenseYear()).isEqualTo(newExpenseDTO.expenseYear());
         assertThat(expense.getAmount()).isEqualTo(newExpenseDTO.amount());
-        assertThat(expense.getCategory().categoryId()).isEqualTo(newExpenseDTO.categoryId());
-        assertThat(expense.getAccount().accountId()).isEqualTo(newExpenseDTO.accountId());
-        assertThat(expense.getAccount().balance()).isEqualTo(accountBalance.subtract(newExpenseDTO.amount()));
+        assertThat(expense.getCategory().getCategoryId()).isEqualTo(newExpenseDTO.categoryId());
+        assertThat(expense.getAccount().getAccountId()).isEqualTo(newExpenseDTO.accountId());
+        assertThat(expense.getAccount().getBalance()).isEqualTo(accountBalance.subtract(newExpenseDTO.amount()));
         assertThat(sampleBudget.getMonthlyBudgetBalance()).isEqualTo(monthlyBudgetBalance.subtract(newExpenseDTO.amount()));
         assertThat(sampleBudget.getMonthlyBudgetUsed()).isEqualTo(monthlyBudgetUsed.add(newExpenseDTO.amount()));
         assertThat(sampleBudget.getMonthlyBudgetUsedPercentage()).isEqualTo(monthlyBudgetUsedPercentage.add(newExpenseDTO.amount().multiply(new BigDecimal(100)).divide(sampleBudget.getMonthlyBudget(), RoundingMode.HALF_UP)));
@@ -180,8 +181,8 @@ class ExpenseServiceTest {
         assertThat(expense.getExpenseYear()).isEqualTo(newExpenseDTO.expenseYear());
         assertThat(expense.getAmount()).isEqualTo(newExpenseDTO.amount());
         assertThat(expense.getCategory()).isNull();
-        assertThat(expense.getAccount().accountId()).isEqualTo(newExpenseDTO.accountId());
-        assertThat(expense.getAccount().balance()).isEqualTo(accountBalance.subtract(newExpenseDTO.amount()));
+        assertThat(expense.getAccount().getAccountId()).isEqualTo(newExpenseDTO.accountId());
+        assertThat(expense.getAccount().getBalance()).isEqualTo(accountBalance.subtract(newExpenseDTO.amount()));
 
         verify(categoryRepository, times(1)).findById(null);
         verify(accountRepository, times(1)).findById(any(UUID.class));
@@ -217,9 +218,9 @@ class ExpenseServiceTest {
         assertThat(expense.getExpenseMonth()).isEqualTo(newExpenseDTO.expenseMonth());
         assertThat(expense.getExpenseYear()).isEqualTo(newExpenseDTO.expenseYear());
         assertThat(expense.getAmount()).isEqualTo(newExpenseDTO.amount());
-        assertThat(expense.getCategory().categoryId()).isEqualTo(newExpenseDTO.categoryId());
-        assertThat(expense.getAccount().accountId()).isEqualTo(newExpenseDTO.accountId());
-        assertThat(expense.getAccount().balance()).isEqualTo(accountBalance.subtract(newExpenseDTO.amount()));
+        assertThat(expense.getCategory().getCategoryId()).isEqualTo(newExpenseDTO.categoryId());
+        assertThat(expense.getAccount().getAccountId()).isEqualTo(newExpenseDTO.accountId());
+        assertThat(expense.getAccount().getBalance()).isEqualTo(accountBalance.subtract(newExpenseDTO.amount()));
 
         verify(categoryRepository, times(1)).findById(any(UUID.class));
         verify(budgetRepository, times(1)).findByCategoryMonthYear(any(Category.class), anyInt(), anyInt());
@@ -442,8 +443,8 @@ class ExpenseServiceTest {
         assertThat(expense.getExpenseYear()).isEqualTo(sampleExpense.getExpenseYear());
         assertThat(expense.getDate()).isEqualTo(sampleExpense.getDate());
         assertThat(expense.getAmount()).isEqualTo(sampleExpense.getAmount());
-        assertThat(expense.getAccount().accountId()).isEqualTo(sampleExpense.getAccount().getAccountId());
-        assertThat(expense.getCategory().categoryId()).isEqualTo(sampleExpense.getCategory().getCategoryId());
+        assertThat(expense.getAccount().getAccountId()).isEqualTo(sampleExpense.getAccount().getAccountId());
+        assertThat(expense.getCategory().getCategoryId()).isEqualTo(sampleExpense.getCategory().getCategoryId());
         assertThat(expense.getCreatedAt()).isEqualTo(sampleExpense.getCreatedAt());
         assertThat(expense.getUpdatedAt()).isEqualTo(sampleExpense.getUpdatedAt());
 
@@ -481,8 +482,8 @@ class ExpenseServiceTest {
         assertThat(expenses.getFirst().getExpenseYear()).isEqualTo(sampleExpense.getExpenseYear());
         assertThat(expenses.getFirst().getDate()).isEqualTo(sampleExpense.getDate());
         assertThat(expenses.getFirst().getAmount()).isEqualTo(sampleExpense.getAmount());
-        assertThat(expenses.getFirst().getAccount().accountId()).isEqualTo(sampleExpense.getAccount().getAccountId());
-        assertThat(expenses.getFirst().getCategory().categoryId()).isEqualTo(sampleExpense.getCategory().getCategoryId());
+        assertThat(expenses.getFirst().getAccount().getAccountId()).isEqualTo(sampleExpense.getAccount().getAccountId());
+        assertThat(expenses.getFirst().getCategory().getCategoryId()).isEqualTo(sampleExpense.getCategory().getCategoryId());
         assertThat(expenses.getFirst().getCreatedAt()).isEqualTo(sampleExpense.getCreatedAt());
         assertThat(expenses.getFirst().getUpdatedAt()).isEqualTo(sampleExpense.getUpdatedAt());
 

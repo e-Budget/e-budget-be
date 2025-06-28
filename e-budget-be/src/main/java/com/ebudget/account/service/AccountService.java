@@ -32,16 +32,7 @@ public class AccountService implements IAccountService {
 
         accountRepository.persistAndFlush(account);
 
-        return new AccountDTO(
-                account.getAccountId(),
-                account.getAccountLogo(),
-                account.getAccountName(),
-                account.getAccountType(),
-                account.getInitialBalance(),
-                account.getBalance(),
-                account.getCreatedAt(),
-                account.getUpdatedAt()
-        );
+        return new AccountDTO(account);
     }
 
     @Override
@@ -64,16 +55,7 @@ public class AccountService implements IAccountService {
             throw new EntityNotFoundException(Account.class, accountId);
         }
 
-        return new AccountDTO(
-                account.getAccountId(),
-                account.getAccountLogo(),
-                account.getAccountName(),
-                account.getAccountType(),
-                account.getInitialBalance(),
-                account.getBalance(),
-                account.getCreatedAt(),
-                account.getUpdatedAt()
-        );
+        return new AccountDTO(account);
     }
 
     @Override
@@ -81,16 +63,7 @@ public class AccountService implements IAccountService {
         List<Account> accounts = accountRepository.listAll();
 
         return accounts.stream()
-                .map(account -> new AccountDTO(
-                        account.getAccountId(),
-                        account.getAccountLogo(),
-                        account.getAccountName(),
-                        account.getAccountType(),
-                        account.getInitialBalance(),
-                        account.getBalance(),
-                        account.getCreatedAt(),
-                        account.getUpdatedAt()
-                ))
+                .map(AccountDTO::new)
                 .toList();
     }
 

@@ -1,6 +1,7 @@
 package com.ebudget.account.resource;
 
 import com.ebudget.account.model.Account;
+import com.ebudget.account.model.enums.AccountLogo;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.request.NewAccountDTO;
@@ -39,7 +40,7 @@ class AccountResourceTest {
     @Transactional
     void setup() {
         sampleAccount = Account.builder()
-                .accountLogo("accountLogo")
+                .accountLogo(AccountLogo.SANTANDER)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal("0.00"))
@@ -61,7 +62,7 @@ class AccountResourceTest {
     @DisplayName("Should add a new account")
     void shouldAddAccount() {
         NewAccountDTO newAccountDTO = new NewAccountDTO(
-                "accountLogo",
+                AccountLogo.NONE,
                 "accountName",
                 AccountType.BANK_ACCOUNT,
                 new BigDecimal("0.00")
@@ -78,24 +79,24 @@ class AccountResourceTest {
             .extract()
             .as(new TypeRef<AccountDTO>() {});
 
-        assertThat(response.accountId()).isNotNull();
-        assertThat(response.accountId()).isInstanceOf(UUID.class);
-        assertThat(response.accountLogo()).isEqualTo(newAccountDTO.accountLogo());
-        assertThat(response.accountName()).isEqualTo(newAccountDTO.accountName());
-        assertThat(response.accountType()).isEqualTo(newAccountDTO.accountType());
-        assertThat(response.initialBalance()).isEqualTo(newAccountDTO.initialBalance());
-        assertThat(response.balance()).isEqualTo(newAccountDTO.initialBalance());
-        assertThat(response.createdAt()).isNotNull();
-        assertThat(response.createdAt()).isInstanceOf(LocalDateTime.class);
-        assertThat(response.updatedAt()).isNotNull();
-        assertThat(response.updatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getAccountId()).isNotNull();
+        assertThat(response.getAccountId()).isInstanceOf(UUID.class);
+        assertThat(response.getAccountLogo()).isEqualTo(newAccountDTO.accountLogo());
+        assertThat(response.getAccountName()).isEqualTo(newAccountDTO.accountName());
+        assertThat(response.getAccountType()).isEqualTo(newAccountDTO.accountType());
+        assertThat(response.getInitialBalance()).isEqualTo(newAccountDTO.initialBalance());
+        assertThat(response.getBalance()).isEqualTo(newAccountDTO.initialBalance());
+        assertThat(response.getCreatedAt()).isNotNull();
+        assertThat(response.getCreatedAt()).isInstanceOf(LocalDateTime.class);
+        assertThat(response.getUpdatedAt()).isNotNull();
+        assertThat(response.getUpdatedAt()).isInstanceOf(LocalDateTime.class);
     }
 
     @Test
     @DisplayName("Should update an account")
     void shouldUpdateAnAccount() {
         UpdateAccountDTO updateAccountDTO = new UpdateAccountDTO(
-                "newAccountLogo",
+                AccountLogo.NONE,
                 "newAccountName",
                 AccountType.BENEFIT_ACCOUNT
         );
@@ -122,14 +123,14 @@ class AccountResourceTest {
             .extract()
             .as(new TypeRef<AccountDTO>() {});
 
-        assertThat(response.accountId()).isEqualTo(sampleAccount.getAccountId());
-        assertThat(response.accountLogo()).isEqualTo(sampleAccount.getAccountLogo());
-        assertThat(response.accountName()).isEqualTo(sampleAccount.getAccountName());
-        assertThat(response.accountType()).isEqualTo(sampleAccount.getAccountType());
-        assertThat(response.initialBalance()).isEqualTo(sampleAccount.getInitialBalance());
-        assertThat(response.balance()).isEqualTo(sampleAccount.getBalance());
-        assertThat(response.createdAt()).isEqualTo(sampleAccount.getCreatedAt());
-        assertThat(response.updatedAt()).isEqualTo(sampleAccount.getUpdatedAt());
+        assertThat(response.getAccountId()).isEqualTo(sampleAccount.getAccountId());
+        assertThat(response.getAccountLogo()).isEqualTo(sampleAccount.getAccountLogo());
+        assertThat(response.getAccountName()).isEqualTo(sampleAccount.getAccountName());
+        assertThat(response.getAccountType()).isEqualTo(sampleAccount.getAccountType());
+        assertThat(response.getInitialBalance()).isEqualTo(sampleAccount.getInitialBalance());
+        assertThat(response.getBalance()).isEqualTo(sampleAccount.getBalance());
+        assertThat(response.getCreatedAt()).isEqualTo(sampleAccount.getCreatedAt());
+        assertThat(response.getUpdatedAt()).isEqualTo(sampleAccount.getUpdatedAt());
     }
 
     @Test
@@ -146,14 +147,14 @@ class AccountResourceTest {
             .as(new TypeRef<List<AccountDTO>>() {});
 
         assertThat(response).hasSize(1);
-        assertThat(response.getFirst().accountId()).isEqualTo(sampleAccount.getAccountId());
-        assertThat(response.getFirst().accountLogo()).isEqualTo(sampleAccount.getAccountLogo());
-        assertThat(response.getFirst().accountName()).isEqualTo(sampleAccount.getAccountName());
-        assertThat(response.getFirst().accountType()).isEqualTo(sampleAccount.getAccountType());
-        assertThat(response.getFirst().initialBalance()).isEqualTo(sampleAccount.getInitialBalance());
-        assertThat(response.getFirst().balance()).isEqualTo(sampleAccount.getBalance());
-        assertThat(response.getFirst().createdAt()).isEqualTo(sampleAccount.getCreatedAt());
-        assertThat(response.getFirst().updatedAt()).isEqualTo(sampleAccount.getUpdatedAt());
+        assertThat(response.getFirst().getAccountId()).isEqualTo(sampleAccount.getAccountId());
+        assertThat(response.getFirst().getAccountLogo()).isEqualTo(sampleAccount.getAccountLogo());
+        assertThat(response.getFirst().getAccountName()).isEqualTo(sampleAccount.getAccountName());
+        assertThat(response.getFirst().getAccountType()).isEqualTo(sampleAccount.getAccountType());
+        assertThat(response.getFirst().getInitialBalance()).isEqualTo(sampleAccount.getInitialBalance());
+        assertThat(response.getFirst().getBalance()).isEqualTo(sampleAccount.getBalance());
+        assertThat(response.getFirst().getCreatedAt()).isEqualTo(sampleAccount.getCreatedAt());
+        assertThat(response.getFirst().getUpdatedAt()).isEqualTo(sampleAccount.getUpdatedAt());
     }
 
     @Test

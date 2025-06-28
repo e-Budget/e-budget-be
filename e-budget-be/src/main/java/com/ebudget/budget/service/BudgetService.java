@@ -9,7 +9,6 @@ import com.ebudget.budget.resource.response.BudgetDTO;
 import com.ebudget.budget.service.interfaces.IBudgetService;
 import com.ebudget.category.model.Category;
 import com.ebudget.category.repository.CategoryRepository;
-import com.ebudget.category.resource.response.CategoryDTO;
 import com.ebudget.core.exceptions.EntityNotFoundException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -59,23 +58,7 @@ public class BudgetService implements IBudgetService {
 
         budgetRepository.persistAndFlush(budget);
 
-        return new BudgetDTO(
-                budget.getBudgetId(),
-                budget.getBudgetMonth(),
-                budget.getBudgetYear(),
-                new CategoryDTO(
-                        budget.getCategory().getCategoryId(),
-                        budget.getCategory().getCategoryName(),
-                        budget.getCategory().getCreatedAt(),
-                        budget.getCategory().getUpdatedAt()
-                ),
-                budget.getMonthlyBudget(),
-                budget.getMonthlyBudgetUsed(),
-                budget.getMonthlyBudgetUsedPercentage(),
-                budget.getMonthlyBudgetBalance(),
-                budget.getCreatedAt(),
-                budget.getUpdatedAt()
-        );
+        return new BudgetDTO(budget);
     }
 
     @Override
@@ -108,23 +91,7 @@ public class BudgetService implements IBudgetService {
             throw new EntityNotFoundException(Budget.class, budgetId);
         }
 
-        return new BudgetDTO(
-                budget.getBudgetId(),
-                budget.getBudgetMonth(),
-                budget.getBudgetYear(),
-                new CategoryDTO(
-                        budget.getCategory().getCategoryId(),
-                        budget.getCategory().getCategoryName(),
-                        budget.getCategory().getCreatedAt(),
-                        budget.getCategory().getUpdatedAt()
-                ),
-                budget.getMonthlyBudget(),
-                budget.getMonthlyBudgetUsed(),
-                budget.getMonthlyBudgetUsedPercentage(),
-                budget.getMonthlyBudgetBalance(),
-                budget.getCreatedAt(),
-                budget.getUpdatedAt()
-        );
+        return new BudgetDTO(budget);
     }
 
     @Override
@@ -132,23 +99,7 @@ public class BudgetService implements IBudgetService {
         List<Budget> budgets = budgetRepository.listAll();
 
         return budgets.stream()
-                .map(budget -> new BudgetDTO(
-                        budget.getBudgetId(),
-                        budget.getBudgetMonth(),
-                        budget.getBudgetYear(),
-                        new CategoryDTO(
-                                budget.getCategory().getCategoryId(),
-                                budget.getCategory().getCategoryName(),
-                                budget.getCategory().getCreatedAt(),
-                                budget.getCategory().getUpdatedAt()
-                        ),
-                        budget.getMonthlyBudget(),
-                        budget.getMonthlyBudgetUsed(),
-                        budget.getMonthlyBudgetUsedPercentage(),
-                        budget.getMonthlyBudgetBalance(),
-                        budget.getCreatedAt(),
-                        budget.getUpdatedAt()
-                ))
+                .map(BudgetDTO::new)
                 .toList();
     }
 

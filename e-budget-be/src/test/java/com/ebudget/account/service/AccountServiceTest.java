@@ -1,6 +1,7 @@
 package com.ebudget.account.service;
 
 import com.ebudget.account.model.Account;
+import com.ebudget.account.model.enums.AccountLogo;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.request.NewAccountDTO;
@@ -44,7 +45,7 @@ class AccountServiceTest {
         sampleAccountId = UUID.randomUUID();
         sampleAccount = Account.builder()
                 .accountId(sampleAccountId)
-                .accountLogo("accountLogo")
+                .accountLogo(AccountLogo.NONE)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal(0))
@@ -57,26 +58,26 @@ class AccountServiceTest {
     @Test
     @DisplayName("Should add a new account")
     void shouldAddAccount() {
-        doNothing().when(accountRepository).persistAndFlush(any(Account.class));
-
         // given
         NewAccountDTO newAccountDTO = new NewAccountDTO(
-                "logo",
+                AccountLogo.NONE,
                 "name",
                 AccountType.BANK_ACCOUNT,
                 new BigDecimal("0.0")
         );
+
+        doNothing().when(accountRepository).persistAndFlush(any(Account.class));
 
         // when
         AccountDTO account = accountService.addAccount(newAccountDTO);
 
         // then
         assertThat(account).isInstanceOf(AccountDTO.class);
-        assertThat(account.accountLogo()).isEqualTo(newAccountDTO.accountLogo());
-        assertThat(account.accountName()).isEqualTo(newAccountDTO.accountName());
-        assertThat(account.accountType()).isEqualTo(newAccountDTO.accountType());
-        assertThat(account.initialBalance()).isEqualTo(newAccountDTO.initialBalance());
-        assertThat(account.balance()).isEqualTo(newAccountDTO.initialBalance());
+        assertThat(account.getAccountLogo()).isEqualTo(newAccountDTO.accountLogo());
+        assertThat(account.getAccountName()).isEqualTo(newAccountDTO.accountName());
+        assertThat(account.getAccountType()).isEqualTo(newAccountDTO.accountType());
+        assertThat(account.getInitialBalance()).isEqualTo(newAccountDTO.initialBalance());
+        assertThat(account.getBalance()).isEqualTo(newAccountDTO.initialBalance());
 
         verify(accountRepository, times(1)).persistAndFlush(any(Account.class));
     }
@@ -86,7 +87,7 @@ class AccountServiceTest {
     void shouldUpdateAccount() {
         // given
         UpdateAccountDTO updateAccountDTO = new UpdateAccountDTO(
-                "newAccountLogo",
+                AccountLogo.SANTANDER,
                 "newAccountName",
                 AccountType.BENEFIT_ACCOUNT
         );
@@ -110,7 +111,7 @@ class AccountServiceTest {
     void shouldThrowExceptionOnUpdateNonExistingAccount() {
         // given
         UpdateAccountDTO updateAccountDTO = new UpdateAccountDTO(
-                "newAccountLogo",
+                AccountLogo.SANTANDER,
                 "newAccountName",
                 AccountType.BENEFIT_ACCOUNT
         );
@@ -135,12 +136,12 @@ class AccountServiceTest {
         AccountDTO accountDTO = accountService.getAccount(sampleAccountId);
 
         // then
-        assertThat(accountDTO.accountId()).isEqualTo(sampleAccount.getAccountId());
-        assertThat(accountDTO.accountLogo()).isEqualTo(sampleAccount.getAccountLogo());
-        assertThat(accountDTO.accountName()).isEqualTo(sampleAccount.getAccountName());
-        assertThat(accountDTO.accountType()).isEqualTo(sampleAccount.getAccountType());
-        assertThat(accountDTO.initialBalance()).isEqualTo(sampleAccount.getInitialBalance());
-        assertThat(accountDTO.balance()).isEqualTo(sampleAccount.getBalance());
+        assertThat(accountDTO.getAccountId()).isEqualTo(sampleAccount.getAccountId());
+        assertThat(accountDTO.getAccountLogo()).isEqualTo(sampleAccount.getAccountLogo());
+        assertThat(accountDTO.getAccountName()).isEqualTo(sampleAccount.getAccountName());
+        assertThat(accountDTO.getAccountType()).isEqualTo(sampleAccount.getAccountType());
+        assertThat(accountDTO.getInitialBalance()).isEqualTo(sampleAccount.getInitialBalance());
+        assertThat(accountDTO.getBalance()).isEqualTo(sampleAccount.getBalance());
         // should add createdAt and updatedAt
 
         verify(accountRepository, times(1)).findById(any(UUID.class));

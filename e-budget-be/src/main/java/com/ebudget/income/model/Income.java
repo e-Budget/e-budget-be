@@ -1,7 +1,7 @@
 package com.ebudget.income.model;
 
 import com.ebudget.account.model.Account;
-import com.ebudget.income.resource.request.NewIncomeDTO;
+import com.ebudget.income.resource.request.UpdateIncomeDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -46,12 +46,12 @@ public class Income {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public void update(NewIncomeDTO updateIncomeDTO) {
+    public void update(UpdateIncomeDTO updateIncomeDTO) {
         setIncomeDescription(updateIncomeDTO.incomeDescription());
         setAmount(updateIncomeDTO.amount());
     }
 
-    public void update(NewIncomeDTO updateIncomeDTO, Account account) {
+    public void update(UpdateIncomeDTO updateIncomeDTO, Account account) {
         setIncomeDescription(updateIncomeDTO.incomeDescription());
         setAmount(updateIncomeDTO.amount());
         setAccount(account);

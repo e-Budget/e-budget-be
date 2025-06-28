@@ -31,8 +31,8 @@ public class ExpenseDTO {
         this.expenseMonth = expense.getExpenseMonth();
         this.expenseYear = expense.getExpenseYear();
         this.amount = expense.getAmount();
-        this.category = expense.getCategory() != null ? new CategoryDTO(expense.getCategory().getCategoryId(), expense.getCategory().getCategoryName(), expense.getCategory().getCreatedAt(), expense.getCategory().getUpdatedAt()) : null;
-        this.account = new AccountDTO(expense.getAccount().getAccountId(), expense.getAccount().getAccountLogo(), expense.getAccount().getAccountName(), expense.getAccount().getAccountType(), expense.getAccount().getInitialBalance(), expense.getAccount().getBalance(), expense.getAccount().getCreatedAt(), expense.getAccount().getUpdatedAt());
+        this.category = expense.getCategory() != null ? new CategoryDTO(expense.getCategory()) : null;
+        this.account = new AccountDTO(expense.getAccount());
         this.date = expense.getDate();
         this.createdAt = expense.getCreatedAt();
         this.updatedAt = expense.getUpdatedAt();

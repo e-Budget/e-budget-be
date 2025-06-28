@@ -3,6 +3,7 @@ package com.ebudget.category.service;
 import com.ebudget.category.model.Category;
 import com.ebudget.category.repository.CategoryRepository;
 import com.ebudget.category.resource.request.NewCategoryDTO;
+import com.ebudget.category.resource.request.UpdateCategoryDTO;
 import com.ebudget.category.resource.response.CategoryDTO;
 import com.ebudget.core.exceptions.EntityNotFoundException;
 import io.quarkus.test.InjectMock;
@@ -50,17 +51,17 @@ class CategoryServiceTest {
     @Test
     @DisplayName("Should add a category")
     void shouldAddCategory() {
-        doNothing().when(categoryRepository).persistAndFlush(any(Category.class));
-
         // given
         NewCategoryDTO newCategoryDTO = new NewCategoryDTO("categoryName");
+
+        doNothing().when(categoryRepository).persistAndFlush(any(Category.class));
 
         // when
         CategoryDTO category = categoryService.addCategory(newCategoryDTO);
 
         // then
         assertThat(category).isInstanceOf(CategoryDTO.class);
-        assertThat(category.categoryName()).isEqualTo(newCategoryDTO.categoryName());
+        assertThat(category.getCategoryName()).isEqualTo(newCategoryDTO.categoryName());
 
         verify(categoryRepository, times(1)).persistAndFlush(any(Category.class));
     }
@@ -68,10 +69,10 @@ class CategoryServiceTest {
     @Test
     @DisplayName("Should update a category")
     void shouldUpdateCategory() {
-        when(categoryRepository.findById(any(UUID.class))).thenReturn(sampleCategory);
-
         // given
-        NewCategoryDTO updateCategoryDTO = new NewCategoryDTO("updatedCategoryName");
+        UpdateCategoryDTO updateCategoryDTO = new UpdateCategoryDTO("updatedCategoryName");
+
+        when(categoryRepository.findById(any(UUID.class))).thenReturn(sampleCategory);
 
         // when
         categoryService.updateCategory(sampleCategoryId, updateCategoryDTO);
@@ -87,7 +88,7 @@ class CategoryServiceTest {
     @DisplayName("Should throw exception on update a non-existing category")
     void shouldThrowExceptionOnUpdateCategoryNonExistingCategory() {
         // given
-        NewCategoryDTO updateCategoryDTO = new NewCategoryDTO("updatedCategoryName");
+        UpdateCategoryDTO updateCategoryDTO = new UpdateCategoryDTO("updatedCategoryName");
 
         when(categoryRepository.findById(any(UUID.class))).thenReturn(null);
 
@@ -110,10 +111,10 @@ class CategoryServiceTest {
 
         // then
         assertThat(category).isInstanceOf(CategoryDTO.class);
-        assertThat(category.categoryId()).isEqualTo(sampleCategoryId);
-        assertThat(category.categoryName()).isEqualTo(sampleCategory.getCategoryName());
-        assertThat(category.createdAt()).isEqualTo(sampleCategory.getCreatedAt());
-        assertThat(category.updatedAt()).isEqualTo(sampleCategory.getUpdatedAt());
+        assertThat(category.getCategoryId()).isEqualTo(sampleCategoryId);
+        assertThat(category.getCategoryName()).isEqualTo(sampleCategory.getCategoryName());
+        assertThat(category.getCreatedAt()).isEqualTo(sampleCategory.getCreatedAt());
+        assertThat(category.getUpdatedAt()).isEqualTo(sampleCategory.getUpdatedAt());
 
         verify(categoryRepository, times(1)).findById(any(UUID.class));
     }
