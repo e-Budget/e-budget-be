@@ -19,6 +19,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -62,5 +63,19 @@ public class Budget {
         // / monthlyBudgetBalance to be implemented along with expenses
         // feature
         setMonthlyBudget(updateBudgetDTO.monthlyBudget());
+        setMonthlyBudgetBalance(getMonthlyBudget().add(getMonthlyBudgetUsed().negate()));
+        setMonthlyBudgetUsedPercentage(getMonthlyBudgetUsed().multiply(new BigDecimal(100)).divide(getMonthlyBudget(), RoundingMode.HALF_UP));
+    }
+
+    public void subtract(BigDecimal amount) {
+        setMonthlyBudgetBalance(getMonthlyBudgetBalance().subtract(amount));
+        setMonthlyBudgetUsed(getMonthlyBudgetUsed().add(amount));
+        setMonthlyBudgetUsedPercentage(getMonthlyBudgetUsed().multiply(new BigDecimal(100)).divide(getMonthlyBudget(), RoundingMode.HALF_UP));
+    }
+
+    public void add(BigDecimal amount) {
+        setMonthlyBudgetBalance(getMonthlyBudgetBalance().add(amount));
+        setMonthlyBudgetUsed(getMonthlyBudgetUsed().subtract(amount));
+        setMonthlyBudgetUsedPercentage(getMonthlyBudgetUsed().multiply(new BigDecimal(100)).divide(getMonthlyBudget(), RoundingMode.HALF_UP));
     }
 }
