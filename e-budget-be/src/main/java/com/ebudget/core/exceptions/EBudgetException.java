@@ -28,7 +28,7 @@ public class EBudgetException extends RuntimeException {
         return new ExceptionDTO(
                 exception,
                 message,
-                buildDetails(details)
+                details != null ? buildDetails(details) : null
         );
     }
 

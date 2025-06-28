@@ -59,4 +59,12 @@ public class Account {
     public void updateBalance(BigDecimal amount) {
         setBalance(getBalance().add(amount));
     }
+
+    public void withdraw(BigDecimal amount) {
+        setBalance(getBalance().subtract(amount));
+    }
+
+    public void deposit(BigDecimal amount) {
+        setBalance(getBalance().add(amount));
+    }
 }
