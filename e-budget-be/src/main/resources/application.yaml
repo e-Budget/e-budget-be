@@ -9,6 +9,11 @@ quarkus:
     password: ${E_BUDGET_DB_PASSWORD:postgres}
     jdbc:
       url: jdbc:postgresql://${E_BUDGET_DB_HOSTNAME:localhost}:${E_BUDGET_DB_PORT:5432}/${E_BUDGET_DB_NAME:ebudget}
+  http:
+    cors:
+      ~: true
+      origins: ${E_BUDGET_FE_URL:http://localhost:4200}
+      method: GET,POST,PUT,DELETE
 
 "%test":
   quarkus:

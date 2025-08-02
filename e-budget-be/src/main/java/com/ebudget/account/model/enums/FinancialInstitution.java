@@ -1,6 +1,6 @@
 package com.ebudget.account.model.enums;
 
-public enum AccountLogo {
+public enum FinancialInstitution {
     SANTANDER,
     WISE,
     REVOLUT,

@@ -1,7 +1,7 @@
 package com.ebudget.account.resource;
 
 import com.ebudget.account.model.Account;
-import com.ebudget.account.model.enums.AccountLogo;
+import com.ebudget.account.model.enums.FinancialInstitution;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.request.NewAccountDTO;
@@ -40,7 +40,7 @@ class AccountResourceTest {
     @Transactional
     void setup() {
         sampleAccount = Account.builder()
-                .accountLogo(AccountLogo.SANTANDER)
+                .financialInstitution(FinancialInstitution.SANTANDER)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal("0.00"))
@@ -62,7 +62,7 @@ class AccountResourceTest {
     @DisplayName("Should add a new account")
     void shouldAddAccount() {
         NewAccountDTO newAccountDTO = new NewAccountDTO(
-                AccountLogo.NONE,
+                FinancialInstitution.NONE,
                 "accountName",
                 AccountType.BANK_ACCOUNT,
                 new BigDecimal("0.00")
@@ -81,7 +81,7 @@ class AccountResourceTest {
 
         assertThat(response.getAccountId()).isNotNull();
         assertThat(response.getAccountId()).isInstanceOf(UUID.class);
-        assertThat(response.getAccountLogo()).isEqualTo(newAccountDTO.accountLogo());
+        assertThat(response.getFinancialInstitution()).isEqualTo(newAccountDTO.financialInstitution());
         assertThat(response.getAccountName()).isEqualTo(newAccountDTO.accountName());
         assertThat(response.getAccountType()).isEqualTo(newAccountDTO.accountType());
         assertThat(response.getInitialBalance()).isEqualTo(newAccountDTO.initialBalance());
@@ -96,7 +96,7 @@ class AccountResourceTest {
     @DisplayName("Should update an account")
     void shouldUpdateAnAccount() {
         UpdateAccountDTO updateAccountDTO = new UpdateAccountDTO(
-                AccountLogo.NONE,
+                FinancialInstitution.NONE,
                 "newAccountName",
                 AccountType.BENEFIT_ACCOUNT
         );
@@ -124,7 +124,7 @@ class AccountResourceTest {
             .as(new TypeRef<AccountDTO>() {});
 
         assertThat(response.getAccountId()).isEqualTo(sampleAccount.getAccountId());
-        assertThat(response.getAccountLogo()).isEqualTo(sampleAccount.getAccountLogo());
+        assertThat(response.getFinancialInstitution()).isEqualTo(sampleAccount.getFinancialInstitution());
         assertThat(response.getAccountName()).isEqualTo(sampleAccount.getAccountName());
         assertThat(response.getAccountType()).isEqualTo(sampleAccount.getAccountType());
         assertThat(response.getInitialBalance()).isEqualTo(sampleAccount.getInitialBalance());
@@ -148,7 +148,7 @@ class AccountResourceTest {
 
         assertThat(response).hasSize(1);
         assertThat(response.getFirst().getAccountId()).isEqualTo(sampleAccount.getAccountId());
-        assertThat(response.getFirst().getAccountLogo()).isEqualTo(sampleAccount.getAccountLogo());
+        assertThat(response.getFirst().getFinancialInstitution()).isEqualTo(sampleAccount.getFinancialInstitution());
         assertThat(response.getFirst().getAccountName()).isEqualTo(sampleAccount.getAccountName());
         assertThat(response.getFirst().getAccountType()).isEqualTo(sampleAccount.getAccountType());
         assertThat(response.getFirst().getInitialBalance()).isEqualTo(sampleAccount.getInitialBalance());

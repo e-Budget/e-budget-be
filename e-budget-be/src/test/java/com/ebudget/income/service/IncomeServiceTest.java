@@ -1,7 +1,7 @@
 package com.ebudget.income.service;
 
 import com.ebudget.account.model.Account;
-import com.ebudget.account.model.enums.AccountLogo;
+import com.ebudget.account.model.enums.FinancialInstitution;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.core.exceptions.EntityNotFoundException;
@@ -49,7 +49,7 @@ class IncomeServiceTest {
     void setup() {
         sampleAccount = Account.builder()
                 .accountId(UUID.randomUUID())
-                .accountLogo(AccountLogo.NONE)
+                .financialInstitution(FinancialInstitution.NONE)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal(0))
@@ -152,7 +152,7 @@ class IncomeServiceTest {
 
         Account account = Account.builder()
                 .accountId(UUID.randomUUID())
-                .accountLogo(AccountLogo.NONE)
+                .financialInstitution(FinancialInstitution.NONE)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal(0))

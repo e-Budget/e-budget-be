@@ -1,7 +1,7 @@
 package com.ebudget.core.config;
 
 import com.ebudget.account.model.Account;
-import com.ebudget.account.model.enums.AccountLogo;
+import com.ebudget.account.model.enums.FinancialInstitution;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.resource.request.NewAccountDTO;
 import com.ebudget.core.exceptions.EntityNotFoundException;
@@ -65,7 +65,7 @@ class EBudgetExceptionMapperTest {
         ));
 
         Set<ConstraintViolation<NewAccountDTO>> violations = validator.validate(new NewAccountDTO(
-                AccountLogo.NONE,
+                FinancialInstitution.NONE,
                 null,
                 AccountType.BANK_ACCOUNT,
                 new BigDecimal("0.00")
