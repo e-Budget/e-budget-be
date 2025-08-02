@@ -1,7 +1,7 @@
 package com.ebudget.transfer.service;
 
 import com.ebudget.account.model.Account;
-import com.ebudget.account.model.enums.AccountLogo;
+import com.ebudget.account.model.enums.FinancialInstitution;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.core.exceptions.EntityNotFoundException;
@@ -51,7 +51,7 @@ class TransferServiceTest {
     void setup() {
         sampleFromAccount = Account.builder()
                 .accountId(UUID.randomUUID())
-                .accountLogo(AccountLogo.NONE)
+                .financialInstitution(FinancialInstitution.NONE)
                 .accountName("fromAccountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal("100.00"))
@@ -62,7 +62,7 @@ class TransferServiceTest {
 
         sampleToAccount = Account.builder()
                 .accountId(UUID.randomUUID())
-                .accountLogo(AccountLogo.NONE)
+                .financialInstitution(FinancialInstitution.NONE)
                 .accountName("toAccountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal("50.00"))

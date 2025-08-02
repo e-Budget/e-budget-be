@@ -1,6 +1,6 @@
 package com.ebudget.account.resource.request;
 
-import com.ebudget.account.model.enums.AccountLogo;
+import com.ebudget.account.model.enums.FinancialInstitution;
 import com.ebudget.account.model.enums.AccountType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 public record NewAccountDTO(
         @NotNull
-        AccountLogo accountLogo,
+        FinancialInstitution financialInstitution,
         @NotBlank
         String accountName,
         @NotNull

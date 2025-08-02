@@ -1,6 +1,6 @@
 package com.ebudget.account.model;
 
-import com.ebudget.account.model.enums.AccountLogo;
+import com.ebudget.account.model.enums.FinancialInstitution;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.resource.request.UpdateAccountDTO;
 import jakarta.persistence.Column;
@@ -36,7 +36,7 @@ public class Account {
     private UUID accountId;
     @Enumerated(EnumType.STRING)
     @Column(name = "account_logo")
-    private AccountLogo accountLogo;
+    private FinancialInstitution financialInstitution;
     @Column(name = "account_name")
     private String accountName;
     @Enumerated(EnumType.STRING)
@@ -53,7 +53,7 @@ public class Account {
     private LocalDateTime updatedAt;
 
     public void update(UpdateAccountDTO updateAccountDTO) {
-        setAccountLogo(updateAccountDTO.accountLogo());
+        setFinancialInstitution(updateAccountDTO.financialInstitution());
         setAccountName(updateAccountDTO.accountName());
         setAccountType(updateAccountDTO.accountType());
     }

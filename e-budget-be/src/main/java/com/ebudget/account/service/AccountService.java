@@ -23,7 +23,7 @@ public class AccountService implements IAccountService {
     @Transactional
     public AccountDTO addAccount(NewAccountDTO newAccountDTO) {
         Account account = Account.builder()
-                .accountLogo(newAccountDTO.accountLogo())
+                .financialInstitution(newAccountDTO.financialInstitution())
                 .accountName(newAccountDTO.accountName())
                 .accountType(newAccountDTO.accountType())
                 .initialBalance(newAccountDTO.initialBalance())

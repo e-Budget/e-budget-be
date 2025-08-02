@@ -1,7 +1,7 @@
 package com.ebudget.income.resource;
 
 import com.ebudget.account.model.Account;
-import com.ebudget.account.model.enums.AccountLogo;
+import com.ebudget.account.model.enums.FinancialInstitution;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.income.model.Income;
@@ -44,7 +44,7 @@ class IncomeResourceTest {
     @Transactional
     void setup() {
         sampleAccount = Account.builder()
-                .accountLogo(AccountLogo.NONE)
+                .financialInstitution(FinancialInstitution.NONE)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal("0.00"))

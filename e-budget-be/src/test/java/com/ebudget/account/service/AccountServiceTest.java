@@ -1,7 +1,7 @@
 package com.ebudget.account.service;
 
 import com.ebudget.account.model.Account;
-import com.ebudget.account.model.enums.AccountLogo;
+import com.ebudget.account.model.enums.FinancialInstitution;
 import com.ebudget.account.model.enums.AccountType;
 import com.ebudget.account.repository.AccountRepository;
 import com.ebudget.account.resource.request.NewAccountDTO;
@@ -45,7 +45,7 @@ class AccountServiceTest {
         sampleAccountId = UUID.randomUUID();
         sampleAccount = Account.builder()
                 .accountId(sampleAccountId)
-                .accountLogo(AccountLogo.NONE)
+                .financialInstitution(FinancialInstitution.NONE)
                 .accountName("accountName")
                 .accountType(AccountType.BANK_ACCOUNT)
                 .initialBalance(new BigDecimal(0))
@@ -60,7 +60,7 @@ class AccountServiceTest {
     void shouldAddAccount() {
         // given
         NewAccountDTO newAccountDTO = new NewAccountDTO(
-                AccountLogo.NONE,
+                FinancialInstitution.NONE,
                 "name",
                 AccountType.BANK_ACCOUNT,
                 new BigDecimal("0.0")
@@ -73,7 +73,7 @@ class AccountServiceTest {
 
         // then
         assertThat(account).isInstanceOf(AccountDTO.class);
-        assertThat(account.getAccountLogo()).isEqualTo(newAccountDTO.accountLogo());
+        assertThat(account.getFinancialInstitution()).isEqualTo(newAccountDTO.financialInstitution());
         assertThat(account.getAccountName()).isEqualTo(newAccountDTO.accountName());
         assertThat(account.getAccountType()).isEqualTo(newAccountDTO.accountType());
         assertThat(account.getInitialBalance()).isEqualTo(newAccountDTO.initialBalance());
@@ -87,7 +87,7 @@ class AccountServiceTest {
     void shouldUpdateAccount() {
         // given
         UpdateAccountDTO updateAccountDTO = new UpdateAccountDTO(
-                AccountLogo.SANTANDER,
+                FinancialInstitution.SANTANDER,
                 "newAccountName",
                 AccountType.BENEFIT_ACCOUNT
         );
@@ -99,7 +99,7 @@ class AccountServiceTest {
 
         // then
         assertThat(sampleAccount.getAccountId()).isEqualTo(sampleAccountId);
-        assertThat(sampleAccount.getAccountLogo()).isEqualTo(updateAccountDTO.accountLogo());
+        assertThat(sampleAccount.getFinancialInstitution()).isEqualTo(updateAccountDTO.financialInstitution());
         assertThat(sampleAccount.getAccountName()).isEqualTo(updateAccountDTO.accountName());
         assertThat(sampleAccount.getAccountType()).isEqualTo(updateAccountDTO.accountType());
 
@@ -111,7 +111,7 @@ class AccountServiceTest {
     void shouldThrowExceptionOnUpdateNonExistingAccount() {
         // given
         UpdateAccountDTO updateAccountDTO = new UpdateAccountDTO(
-                AccountLogo.SANTANDER,
+                FinancialInstitution.SANTANDER,
                 "newAccountName",
                 AccountType.BENEFIT_ACCOUNT
         );
@@ -137,7 +137,7 @@ class AccountServiceTest {
 
         // then
         assertThat(accountDTO.getAccountId()).isEqualTo(sampleAccount.getAccountId());
-        assertThat(accountDTO.getAccountLogo()).isEqualTo(sampleAccount.getAccountLogo());
+        assertThat(accountDTO.getFinancialInstitution()).isEqualTo(sampleAccount.getFinancialInstitution());
         assertThat(accountDTO.getAccountName()).isEqualTo(sampleAccount.getAccountName());
         assertThat(accountDTO.getAccountType()).isEqualTo(sampleAccount.getAccountType());
         assertThat(accountDTO.getInitialBalance()).isEqualTo(sampleAccount.getInitialBalance());
